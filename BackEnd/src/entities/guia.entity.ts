@@ -1,8 +1,7 @@
-import {BaseEntity,Entity,PrimaryGeneratedColumn,Column,CreateDateColumn,UpdateDateColumn,OneToOne,JoinColumn,OneToMany,ManyToMany,JoinTable} from 'typeorm'
+import {BaseEntity,Entity,PrimaryGeneratedColumn,Column,CreateDateColumn,UpdateDateColumn,OneToOne,JoinColumn,OneToMany} from 'typeorm'
 import { Usuario } from './usuario.entity';
 import { Vehiculo } from './vehiculo.entity';
-import { Lugar } from './lugar.entity';
-import { Reservas } from './reservas.entity';
+import { Recorrido } from './recorrido.entity';
 
 @Entity()
 export class Guia extends BaseEntity{
@@ -24,12 +23,10 @@ export class Guia extends BaseEntity{
     usuario: Usuario;
 
     @OneToMany(() => Vehiculo,(vehiculo) => vehiculo.guia)
+    @JoinColumn()
     vehiculo: Vehiculo[]
-
-    @OneToMany(() => Reservas, reservas => reservas.guia)
-    reservas: Reservas[];
-
-    @ManyToMany(() => Lugar, lugar => lugar.guia)
-    @JoinTable()
-    lugar: Lugar[]
+    
+    @OneToMany(() => Recorrido, recorrido => recorrido.guia)
+    @JoinColumn()
+    recorrido: Recorrido[]
 }

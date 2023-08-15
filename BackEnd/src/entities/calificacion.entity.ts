@@ -1,0 +1,26 @@
+import {BaseEntity,Entity,PrimaryGeneratedColumn,Column,CreateDateColumn,UpdateDateColumn,ManyToOne, OneToMany} from 'typeorm'
+import { Lugar } from './lugar.entity';
+import { Usuario } from './usuario.entity';
+import { Recorrido } from './recorrido.entity';
+
+@Entity()
+export class Calificacion extends BaseEntity{
+    @PrimaryGeneratedColumn()
+    id: number;
+    @Column()
+    comentario: string;
+    @Column()
+    fecha: Date;
+    @Column()
+    note: number;
+    @CreateDateColumn()
+    createdAt: Date;
+    @UpdateDateColumn()
+    updatedAt: Date;
+
+    @ManyToOne(() => Usuario, usuario => usuario.calificacion)
+    usuario: Usuario;
+
+    @ManyToOne(() => Recorrido,recorrido => recorrido.calificacion)
+    recorrido: Recorrido
+}

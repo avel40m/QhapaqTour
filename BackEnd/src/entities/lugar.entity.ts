@@ -1,7 +1,6 @@
-import {BaseEntity,Entity,PrimaryGeneratedColumn,Column,CreateDateColumn,UpdateDateColumn,ManyToMany,OneToMany} from 'typeorm'
-import { Guia } from './guia.entity';
+import {BaseEntity,Entity,PrimaryGeneratedColumn,Column,CreateDateColumn,UpdateDateColumn,OneToMany, JoinColumn} from 'typeorm'
 import { REGIONES } from '../utils/regiones.enum';
-import { Clasificacion } from './clasificacion.entity';
+import { Recorrido } from './recorrido.entity';
 
 @Entity()
 export class Lugar extends BaseEntity{
@@ -27,9 +26,7 @@ export class Lugar extends BaseEntity{
     @UpdateDateColumn()
     updatedAt: Date;
 
-    @ManyToMany(() => Guia, guia => guia.lugar)
-    guia: Guia[]
-
-    @OneToMany(() => Clasificacion, clasificacion => clasificacion.usuario)
-    calificacion: Clasificacion[];
+    @OneToMany(() => Recorrido, recorrido => recorrido.lugar)
+    @JoinColumn()
+    recorrido: Recorrido[];
 }

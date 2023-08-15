@@ -2,7 +2,8 @@ import {BaseEntity,PrimaryGeneratedColumn,Column,CreateDateColumn,UpdateDateColu
 import { ROL } from '../utils/rol.enum';
 import { Guia } from './guia.entity';
 import { Reservas } from './reservas.entity';
-import { Clasificacion } from './clasificacion.entity';
+import { Calificacion } from './calificacion.entity';
+import { Pago } from './pago.entity';
 
 @Entity()
 export class Usuario extends BaseEntity{
@@ -35,8 +36,14 @@ export class Usuario extends BaseEntity{
     guia: Guia
 
     @OneToMany(() => Reservas, reservas => reservas.usuario)
+    @JoinColumn()
     reservas: Reservas[]
 
-    @OneToMany(() => Clasificacion, clasificacion => clasificacion.usuario)
-    clasificacion: Clasificacion[];
+    @OneToMany(() => Calificacion, calificacion => calificacion.usuario)
+    @JoinColumn()
+    calificacion: Calificacion[];
+
+    @OneToMany(() => Pago, pago => pago.usuario)
+    @JoinColumn()
+    pago: Pago[];
 }

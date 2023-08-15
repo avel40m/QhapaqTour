@@ -2,6 +2,7 @@ import {BaseEntity,Entity,PrimaryGeneratedColumn,Column,CreateDateColumn,UpdateD
 import { Guia } from './guia.entity';
 import { Usuario } from './usuario.entity';
 import { Pago } from './pago.entity';
+import { Recorrido } from './recorrido.entity';
 
 @Entity()
 export class Reservas extends BaseEntity{
@@ -20,12 +21,13 @@ export class Reservas extends BaseEntity{
     @UpdateDateColumn()
     updatedAt: Date;
 
-    @ManyToOne(() => Guia, guia => guia.reservas)
-    guia: Guia;
     @ManyToOne(() => Usuario, usuario => usuario.reservas)
     usuario: Usuario;
 
     @OneToOne(() => Pago, pago => pago.reservas)
     @JoinColumn()
     pago: Pago;
+
+    @ManyToOne(() => Recorrido, recorrido => recorrido.reservas)
+    recorrido: Recorrido;
 }
