@@ -21,10 +21,10 @@ export class Recorrido extends BaseEntity{
     lugar: Lugar
 
     @OneToMany(() => Calificacion,calificacion => calificacion.recorrido)
-    @JoinColumn()
+    // @JoinColumn()
     calificacion: Calificacion[]
 
     @OneToMany(() => Reservas, reservas => reservas.recorrido)
-    @JoinColumn()
+    // @JoinColumn()
     reservas: Reservas[];
 }

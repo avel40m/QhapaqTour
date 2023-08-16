@@ -27,6 +27,6 @@ export class Lugar extends BaseEntity{
     updatedAt: Date;
 
     @OneToMany(() => Recorrido, recorrido => recorrido.lugar)
-    @JoinColumn()
+    // @JoinColumn()
     recorrido: Recorrido[];
 }

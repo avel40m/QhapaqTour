@@ -32,18 +32,18 @@ export class Usuario extends BaseEntity{
     updatedAt: Date;
 
     @OneToOne(() => Guia,(guia) => guia.usuario)
-    @JoinColumn()
+    // @JoinColumn()
     guia: Guia
 
     @OneToMany(() => Reservas, reservas => reservas.usuario)
-    @JoinColumn()
+    // @JoinColumn()
     reservas: Reservas[]
 
     @OneToMany(() => Calificacion, calificacion => calificacion.usuario)
-    @JoinColumn()
+    // @JoinColumn()
     calificacion: Calificacion[];
 
     @OneToMany(() => Pago, pago => pago.usuario)
-    @JoinColumn()
+    // @JoinColumn()
     pago: Pago[];
 }

@@ -25,7 +25,7 @@ export class Reservas extends BaseEntity{
     usuario: Usuario;
 
     @OneToOne(() => Pago, pago => pago.reservas)
-    @JoinColumn()
+    // @JoinColumn()
     pago: Pago;
 
     @ManyToOne(() => Recorrido, recorrido => recorrido.reservas)
