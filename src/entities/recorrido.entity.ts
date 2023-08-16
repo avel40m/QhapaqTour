@@ -1,4 +1,4 @@
-import {BaseEntity,Entity,PrimaryGeneratedColumn,Column,CreateDateColumn,UpdateDateColumn,ManyToOne, OneToMany, JoinColumn} from 'typeorm'
+import {BaseEntity,Entity,PrimaryGeneratedColumn,Column,CreateDateColumn,UpdateDateColumn,ManyToOne, OneToMany} from 'typeorm'
 import { Lugar } from './lugar.entity';
 import { Guia } from './guia.entity';
 import { Calificacion } from './calificacion.entity';
@@ -17,16 +17,13 @@ export class Recorrido extends BaseEntity{
 
     @ManyToOne(() => Guia, guia => guia.recorridos)
     guia: Guia;
+    
     @ManyToOne(() => Lugar, lugar => lugar.recorridos)
     lugar: Lugar
 
     @OneToMany(() => Calificacion,calificacion => calificacion.recorrido)
-    // @JoinColumn()
     calificaciones: Calificacion[]
-    // @JoinColumn()
-    calificacion: Calificacion[]
 
     @OneToMany(() => Reservas, reservas => reservas.recorrido)
-    // @JoinColumn()
     reservas: Reservas[];
 }

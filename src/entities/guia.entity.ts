@@ -1,4 +1,4 @@
-import {BaseEntity,Entity,PrimaryGeneratedColumn,Column,CreateDateColumn,UpdateDateColumn,OneToOne,JoinColumn,OneToMany} from 'typeorm'
+import {BaseEntity,Entity,PrimaryGeneratedColumn,Column,CreateDateColumn,UpdateDateColumn,OneToOne,OneToMany} from 'typeorm'
 import { Usuario } from './usuario.entity';
 import { Vehiculo } from './vehiculo.entity';
 import { Recorrido } from './recorrido.entity';
@@ -24,13 +24,11 @@ export class Guia extends BaseEntity{
     updatedAt: Date;
     
     @OneToOne(() => Usuario, (usuario) => usuario.guia)
-    // @JoinColumn()
     usuario: Usuario;
-    
-    @OneToMany(() => Vehiculo, vehiculo => vehiculo.guia)
-    vehiculos: Vehiculo[];
+
+    @OneToMany(() => Vehiculo,(vehiculo) => vehiculo.guia)
+    vehiculos: Vehiculo[]
     
     @OneToMany(() => Recorrido, (recorrido) => recorrido.guia)
-    // @JoinColumn()
     recorridos: Recorrido[]
 }
