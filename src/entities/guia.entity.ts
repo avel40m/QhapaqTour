@@ -7,26 +7,31 @@ import { Recorrido } from './recorrido.entity';
 export class Guia extends BaseEntity{
     @PrimaryGeneratedColumn()
     id: number;
+    
     @Column()
     carnet: string;
+    
     @Column()
     licencia: number;
+
     @Column()
     cedula: string;
+
     @CreateDateColumn()
     createdAt: Date;
+
     @UpdateDateColumn()
     updatedAt: Date;
     
     @OneToOne(() => Usuario, (usuario) => usuario.guia)
-    @JoinColumn()
+    // @JoinColumn()
     usuario: Usuario;
 
     @OneToMany(() => Vehiculo,(vehiculo) => vehiculo.guia)
-    @JoinColumn()
-    vehiculo: Vehiculo[]
+    // @JoinColumn()
+    vehiculos: Vehiculo[]
     
-    @OneToMany(() => Recorrido, recorrido => recorrido.guia)
-    @JoinColumn()
-    recorrido: Recorrido[]
+    @OneToMany(() => Recorrido, (recorrido) => recorrido.guia)
+    // @JoinColumn()
+    recorridos: Recorrido[]
 }

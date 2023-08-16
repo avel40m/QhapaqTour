@@ -15,16 +15,16 @@ export class Recorrido extends BaseEntity{
     @UpdateDateColumn()
     updatedAt: Date;
 
-    @ManyToOne(() => Guia, guia => guia.recorrido)
+    @ManyToOne(() => Guia, guia => guia.recorridos)
     guia: Guia;
-    @ManyToOne(() => Lugar, lugar => lugar.recorrido)
+    @ManyToOne(() => Lugar, lugar => lugar.recorridos)
     lugar: Lugar
 
     @OneToMany(() => Calificacion,calificacion => calificacion.recorrido)
-    @JoinColumn()
-    calificacion: Calificacion[]
+    // @JoinColumn()
+    calificaciones: Calificacion[]
 
     @OneToMany(() => Reservas, reservas => reservas.recorrido)
-    @JoinColumn()
+    // @JoinColumn()
     reservas: Reservas[];
 }

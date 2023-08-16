@@ -15,7 +15,7 @@ export class Pago extends BaseEntity{
     @UpdateDateColumn()
     updatedAt: Date;
 
-    @ManyToOne(() => Usuario, usuario => usuario.pago)
+    @ManyToOne(() => Usuario, usuario => usuario.pagos)
     usuario: Usuario;
     
     @ManyToOne(() => Reservas, reservas => reservas.pago)
