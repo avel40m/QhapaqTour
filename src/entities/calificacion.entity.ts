@@ -7,20 +7,25 @@ import { Recorrido } from './recorrido.entity';
 export class Calificacion extends BaseEntity{
     @PrimaryGeneratedColumn()
     id: number;
+    
     @Column()
     comentario: string;
+    
     @Column()
     fecha: Date;
+    
     @Column()
     note: number;
+    
     @CreateDateColumn()
     createdAt: Date;
+    
     @UpdateDateColumn()
     updatedAt: Date;
 
-    @ManyToOne(() => Usuario, usuario => usuario.calificacion)
+    @ManyToOne(() => Usuario, usuario => usuario.calificaciones)
     usuario: Usuario;
 
-    @ManyToOne(() => Recorrido,recorrido => recorrido.calificacion)
+    @ManyToOne(() => Recorrido,recorrido => recorrido.calificaciones)
     recorrido: Recorrido
 }

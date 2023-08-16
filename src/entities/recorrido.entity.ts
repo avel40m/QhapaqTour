@@ -22,6 +22,8 @@ export class Recorrido extends BaseEntity{
 
     @OneToMany(() => Calificacion,calificacion => calificacion.recorrido)
     // @JoinColumn()
+    calificaciones: Calificacion[]
+    // @JoinColumn()
     calificacion: Calificacion[]
 
     @OneToMany(() => Reservas, reservas => reservas.recorrido)
