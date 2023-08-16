@@ -8,7 +8,6 @@ import {
    signUp, 
    updateUsuario
 } from '../controllers/usuario.controller';
-import passport from 'passport';
 
 const router = Router();
 

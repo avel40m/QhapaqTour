@@ -14,7 +14,5 @@ export const AppDataSource = new DataSource({
     username: 'root',
     password: 'root',
     database: 'QhapaqTour',
-    synchronize: true,
-    logging: true,
     entities: [Usuario,Guia,Vehiculo,Reservas,Calificacion,Recorrido,Lugar,Pago]
 });

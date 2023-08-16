@@ -30,15 +30,9 @@ export class Reservas extends BaseEntity{
     @ManyToOne(() => Usuario, usuario => usuario.reservas)
     usuario: Usuario;
 
-<<<<<<< HEAD
-    @OneToOne(() => Pago, pago => pago.reservas)
-    // @JoinColumn()
-    pago: Pago;
-=======
     @OneToMany(() => Pago, pago => pago.reservas)
     // @JoinColumn()
     pago: Pago[];
->>>>>>> cece4c7b370d464c5429e1d968a4fe0e9892f55b
 
     @ManyToOne(() => Recorrido, recorrido => recorrido.reservas)
     recorrido: Recorrido;

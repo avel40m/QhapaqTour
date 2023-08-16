@@ -26,20 +26,11 @@ export class Guia extends BaseEntity{
     @OneToOne(() => Usuario, (usuario) => usuario.guia)
     // @JoinColumn()
     usuario: Usuario;
-
-    @OneToMany(() => Vehiculo,(vehiculo) => vehiculo.guia)
-    // @JoinColumn()
-<<<<<<< HEAD
-    vehiculo: Vehiculo[]
     
-    @OneToMany(() => Recorrido, recorrido => recorrido.guia)
-    // @JoinColumn()
-    recorrido: Recorrido[]
-=======
-    vehiculos: Vehiculo[]
+    @OneToMany(() => Vehiculo, vehiculo => vehiculo.guia)
+    vehiculos: Vehiculo[];
     
     @OneToMany(() => Recorrido, (recorrido) => recorrido.guia)
     // @JoinColumn()
     recorridos: Recorrido[]
->>>>>>> cece4c7b370d464c5429e1d968a4fe0e9892f55b
 }
