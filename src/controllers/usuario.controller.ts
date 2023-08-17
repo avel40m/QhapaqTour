@@ -144,7 +144,7 @@ export const signIn = async (req: TypedRequest<{}, UserBody>, res: Response) => 
     }
 }
 
-export const signUp = async (req: Request, res: Response) => {
+export const signUp = async (req: TypedRequest<{}, UserBody>, res: Response) => {
     const { password, email, username, apellido, nombre, dni, rol } = req.body;
     try {
         console.log(req.body);
@@ -212,11 +212,11 @@ export const updateUsuario = async (req: TypedRequest<{ id: string }, UserBody>,
         return res.sendStatus(204);
     } catch (error) {
         if (error instanceof Error) {
-            // if (error.message.includes('Duplicate entry')) {
-            //     return res.status(400).json({
-            //         message: 'Ya existe un usuario con ese email.'
-            //     })
-            // }
+            if (error.message.includes('Duplicate entry')) {
+                return res.status(400).json({
+                    message: 'Ya existe un usuario con ese email.'
+                })
+            }
 
             if (error.message.includes('invalid input value for enum')) {
                 return res.status(400).json({

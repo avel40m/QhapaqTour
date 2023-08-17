@@ -1,5 +1,4 @@
-import {BaseEntity,Entity,PrimaryGeneratedColumn,Column,CreateDateColumn,UpdateDateColumn,ManyToOne, OneToMany} from 'typeorm'
-import { Lugar } from './lugar.entity';
+import {BaseEntity,Entity,PrimaryGeneratedColumn,Column,CreateDateColumn,UpdateDateColumn,ManyToOne} from 'typeorm'
 import { Usuario } from './usuario.entity';
 import { Recorrido } from './recorrido.entity';
 
