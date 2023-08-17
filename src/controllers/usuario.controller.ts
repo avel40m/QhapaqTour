@@ -25,7 +25,7 @@ interface TypedRequest<U extends ParamsDictionary, T> extends Request {
 }
 
 const createToken = (usuario: Usuario) => {
-    const token = jwt.sign({ id: usuario.id, email: usuario.email, rol: usuario.rol }, jwtSecret, { expiresIn: '20s' });
+    const token = jwt.sign({ id: usuario.id, email: usuario.email, rol: usuario.rol }, jwtSecret, { expiresIn: '5m' });
     const refreshToken = jwt.sign({ email: usuario.email, rol: usuario.rol }, jwtRefreshTokenSecret, { expiresIn: '90d' });
     
     refreshTokens.push(refreshToken);
@@ -117,7 +117,10 @@ export const signIn = async (req: TypedRequest<{}, UserBody>, res: Response) => 
             });
         }
 
-        const usuarioEncontrado = await Usuario.findOneBy({ email });
+        const usuarioEncontrado = await Usuario.createQueryBuilder('usuario')
+        .where('usuario.email = :email or usuario.username = :email2',{email: email,email2:email})
+        .getOne();
+
         if (!usuarioEncontrado) {
             return res.status(400).json({
                 message: 'El usuario no existe.'
@@ -131,8 +134,9 @@ export const signIn = async (req: TypedRequest<{}, UserBody>, res: Response) => 
             });
         }
         
-        return res.status(201).json({
-            credentials: createToken(usuarioEncontrado)
+        return res.status(201).cookie("credentials",createToken(usuarioEncontrado)).json({
+            message:"Usuario loggueado correctamente",
+            token: createToken(usuarioEncontrado)
         });
     
     } catch (error) {
