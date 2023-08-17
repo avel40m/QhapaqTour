@@ -144,7 +144,7 @@ export const signIn = async (req: TypedRequest<{}, UserBody>, res: Response) => 
     }
 }
 
-export const signUp = async (req: Request, res: Response) => {
+export const signUp = async (req: TypedRequest<{}, UserBody>, res: Response) => {
     const { password, email, username, apellido, nombre, dni, rol } = req.body;
     try {
         if (!password || !email) {
