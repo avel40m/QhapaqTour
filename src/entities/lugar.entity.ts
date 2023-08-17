@@ -6,23 +6,31 @@ import { Recorrido } from './recorrido.entity';
 export class Lugar extends BaseEntity{
     @PrimaryGeneratedColumn()
     id: number;
+    
     @Column()
     nombre: string;
+    
+    @Column()
+    localidad: string;
+    
     @Column()
     latitud: string;
+    
     @Column()
     longitud: string;
-    @Column()
-    precio: number;
+    
     @Column({
         type: 'enum',
         enum: REGIONES
     })
     regiones: REGIONES;
+    
     @Column()
     url: string;
+    
     @CreateDateColumn()
     createdAt: Date;
+
     @UpdateDateColumn()
     updatedAt: Date;
 

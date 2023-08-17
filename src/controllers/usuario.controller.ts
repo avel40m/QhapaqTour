@@ -160,7 +160,7 @@ export const signUp = async (req: TypedRequest<{}, UserBody>, res: Response) => 
         const usuarioEncontrado = await Usuario.findOneBy({ email });
         if (usuarioEncontrado) {
             return res.status(400).json({
-                message: 'Email o nombre de usuario existe.'
+                message: 'El email o nombre de usuario ya existe.'
             });
         }
 
@@ -205,8 +205,6 @@ export const updateUsuario = async (req: TypedRequest<{ id: string }, UserBody>,
         if (req.body.password) {
             req.body.password = await createHash(req.body.password);
         }
-
-        console.log({ body: req.body })
 
         await Usuario.update({ id: parseInt(id) }, req.body);
 
