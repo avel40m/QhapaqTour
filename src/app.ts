@@ -5,7 +5,7 @@ import passport from 'passport';
 import cookieParser from 'cookie-parser';
 import passportMiddleware from './middlewares/passport'
 import usuarioRoutes from './routes/usuario.router';
-import comentarioRoutes from './routes/comentario.router';
+import comentarioRoutes from './routes/calificacion.router';
 
 const app = express();
 
