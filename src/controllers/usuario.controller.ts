@@ -4,6 +4,7 @@ import bcrypt from 'bcrypt'
 import jwt from 'jsonwebtoken'
 import { Usuario } from '../entities/usuario.entity'
 import { ROL } from '../utils/rol.enum';
+import { Guia } from '../entities/guia.entity';
 
 const jwtSecret = 'somesecrettoken'
 const jwtRefreshTokenSecret = 'somesecrettokenrefresh'
@@ -17,6 +18,10 @@ interface UserBody {
     nombre: string;
     dni: string;
     rol: ROL;
+
+    carnet: string;
+    licencia: number;
+    cedula: string;
 }
 
 interface TypedRequest<U extends ParamsDictionary, T> extends Request {
@@ -172,6 +177,17 @@ export const signUp = async (req: TypedRequest<{}, UserBody>, res: Response) => 
         nuevoUsuario.dni = dni;
         nuevoUsuario.rol = rol;
         nuevoUsuario.password = await createHash(password);
+
+        if (rol === 'GUIA') {
+            const guia = new Guia();
+            guia.carnet = req.body.carnet;
+            guia.cedula = req.body.cedula;
+            guia.licencia = req.body.licencia;
+
+            await guia.save();
+
+            nuevoUsuario.guia = guia;
+        }
 
         await nuevoUsuario.save();
 
