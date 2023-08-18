@@ -21,8 +21,8 @@ app.use(passport.initialize());
 passport.use(passportMiddleware);
 
 // Routes
-app.use("/api/v1",usuarioRoutes);
-app.use("/api/v1",comentarioRoutes);
-app.use("/api/v1",recorridoRoutes);
+app.use("/api",usuarioRoutes);
+app.use("/api",comentarioRoutes);
+app.use("/api",recorridoRoutes);
 
 export default app;
