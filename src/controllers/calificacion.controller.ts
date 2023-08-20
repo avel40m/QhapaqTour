@@ -3,9 +3,13 @@ import { Usuario } from "../entities/usuario.entity";
 import { Calificacion } from "../entities/calificacion.entity";
 import { Recorrido } from "../entities/recorrido.entity";
 
+// FALTA COMPLETAR EL ABM RECORRIDO PARA PODER USAR ESTÁ PETICIÓN
 export const createCalificacion = async (req:Request,res:Response) => {
     try {
         const {note,comentario} = req.body;
+        // const recorrido = await Recorrido.findOneOrFail({where: {id: Number(id)}});
+        // if(!recorrido)
+        //     return res.status(404).json({message: "No se encontro el recorrido"});
         const usuario = await Usuario.findOneOrFail({ where: {id: req.idUser}});
         if(!usuario)
             return res.status(404).json({message:"Usuario no encontrado"});
