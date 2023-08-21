@@ -1,5 +1,9 @@
 export enum TIPO_VEHICULOS {
-    AUTOMOVIL = 'AUTOMOVIL',
-    CAMIONETA = 'CAMIONETA',
-    MOTOCICLETA = 'MOTOCICLETA',
+    MOTO = 'MOTO',
+    AUTO = 'AUTO',
+    CAMIONETA = 'CAMIONETA',    
+    COLECTIVO = 'COLECTIVO',    
+    VAN = 'VAN',
+    TRAFIC= 'TRAFIC',
+    MINIBUS = 'MINIBUS',    
 }
