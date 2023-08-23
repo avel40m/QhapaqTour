@@ -206,8 +206,6 @@ export const updateUsuario = async (req: TypedRequest<{ id: string }, UserBody>,
             req.body.password = await createHash(req.body.password);
         }
 
-        console.log({ body: req.body })
-
         await Usuario.update({ id: parseInt(id) }, req.body);
 
         return res.sendStatus(204);

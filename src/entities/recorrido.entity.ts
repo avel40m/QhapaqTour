@@ -8,10 +8,16 @@ import { Reservas } from './reservas.entity';
 export class Recorrido extends BaseEntity{
     @PrimaryGeneratedColumn()
     id: number;
+    
     @Column()
     precio: number;
+
+    @Column()
+    cantidadPersonas: number;
+
     @CreateDateColumn()
     createdAt: Date;
+
     @UpdateDateColumn()
     updatedAt: Date;
 
