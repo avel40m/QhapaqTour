@@ -6,6 +6,7 @@ import cookieParser from 'cookie-parser';
 import passportMiddleware from './middlewares/passport'
 import usuarioRoutes from './routes/usuario.router';
 import comentarioRoutes from './routes/calificacion.router';
+import recorridoRoutes from './routes/recorrido.router';
 
 const app = express();
 
@@ -20,8 +21,8 @@ app.use(passport.initialize());
 passport.use(passportMiddleware);
 
 // Routes
-
 app.use("/api",usuarioRoutes);
 app.use("/api",comentarioRoutes);
+app.use("/api",recorridoRoutes);
 
 export default app;
