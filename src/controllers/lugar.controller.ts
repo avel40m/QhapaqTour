@@ -19,8 +19,6 @@ const regionesYlugares = {
     "BARRANCAS (ABDÓN CASTRO TOLAY)",
     "SUSQUES",
     "CABRERIA",
-    "SUSQUES",
-    "CABRERIA",
     "CASABINDO",
     "COCHINOCA",
     "CUSI CUSI",
@@ -29,17 +27,17 @@ const regionesYlugares = {
     "RINCONADA",
     "RINCONADILLAS",
     "SAN FRANCISCO DE ALFARCITO",
-    "SAN JUAN_Y_OROS",
+    "SAN JUAN Y OROS",
     "SANTA CATALINA",
     "SANTUARIO DE TRES POZOS",
     "SAUSALITO",
     "YAVI",
   ],
-    [REGIONES.QUEBRADA]: [
+  [REGIONES.QUEBRADA]: [
     "ABRA PAMPA",
     "BARRANCAS",
     "SUSQUES",
-    "CABRERÍA",
+    "CABRERÍA",    
     "CASABINDO",
     "COCHINOCA",
     "CUSI CUSI",
@@ -52,20 +50,20 @@ const regionesYlugares = {
     "SANTA CATALINA",
     "SANTUARIO DE TRES POZOS",
     "SAUSALITO",
-    "YAVI",
+    "YAVI",    
   ],
   [REGIONES.VALLE]: [
     "ANGOSTO DE JAIRO",
     "EL CARMEN",
     "SAN SALVADOR DE JUJUY",
-    "YALA",    
+    "YALA",
     "LOZANO",
     "OCLOYAS",
     "PALPALÁ",
     "PERICO",
     "SAN ANTONIO",
     "TIRAXI",
-    "VILLA JARDIN DE REYES",    
+    "VILLA JARDIN DE REYES",
   ],
   [REGIONES.YUNGA]: [
     "SAN FRANCISCO",
@@ -82,7 +80,7 @@ const regionesYlugares = {
 export const createLugar = async (req: Request, res: Response) => {
     try {
       const { nombre, latitud, longitud, precio, regiones, url }: LugarBody = req.body;
-
+  
       const lugar = new Lugar();
       lugar.nombre = nombre;
       lugar.latitud = latitud;
@@ -90,7 +88,7 @@ export const createLugar = async (req: Request, res: Response) => {
       lugar.precio = precio;
       lugar.regiones = regiones;
       lugar.url = url;
-
+  
       // Verificar si la región es válida y existe en el objeto
       if (regionesYlugares[regiones]) {
         const recorridos = regionesYlugares[regiones].map(nombreRecorrido => {
@@ -102,7 +100,7 @@ export const createLugar = async (req: Request, res: Response) => {
         });
         lugar.recorridos = recorridos;
       }
-
+  
       await lugar.save();
       return res.json(lugar);
     } catch (error) {
@@ -111,7 +109,7 @@ export const createLugar = async (req: Request, res: Response) => {
       }
     }
   };
-
+  
   export const getLugares = async (req: Request, res: Response) => {
     try {
       const lugares = await Lugar.find();
@@ -122,13 +120,13 @@ export const createLugar = async (req: Request, res: Response) => {
       }
     }
   };
-
+  
   export const getLugar = async (req: Request, res: Response) => {
     try {
       const { id } = req.params;      
       const lugar = await Lugar.findOneBy({ id: parseInt(id) });
       if (!lugar) return res.status(404).json({ message: "Lugar not found" });
-
+  
       return res.json(lugar);
     } catch (error) {
       if (error instanceof Error) {
@@ -142,9 +140,9 @@ export const updateLugar = async (req: Request, res: Response) => {
     try {
       const { id } = req.params;
       const lugar = await Lugar.findOneBy({ id: parseInt(id) });
-
+  
       if (!lugar) return res.status(404).json({ message: "Lugar not found" });
-
+  
       // Actualizar los datos del lugar según el cuerpo de la solicitud
       const { nombre, latitud, longitud, precio, regiones, url }: LugarBody = req.body;
       lugar.nombre = nombre;
@@ -153,9 +151,9 @@ export const updateLugar = async (req: Request, res: Response) => {
       lugar.precio = precio;
       lugar.regiones = regiones;
       lugar.url = url;
-
+  
       // No es necesario actualizar los recorridos ya que no estamos creando nuevos recorridos aquí
-
+  
       await lugar.save();
       return res.sendStatus(204);
     } catch (error) {
@@ -164,17 +162,17 @@ export const updateLugar = async (req: Request, res: Response) => {
       }
     }
   };
-
+  
 
 
   export const deleteLugar = async (req: Request, res: Response) => {
     try {
       const { id } = req.params;
       const result = await Lugar.delete(id);
-
+  
       if (result.affected === 0)
         return res.status(404).json({ message: "Lugar not found" });
-
+  
       return res.sendStatus(204);
     } catch (error) {
       if (error instanceof Error) {
