@@ -5,7 +5,7 @@ const router = Router();
 
 router.post("/reservas/:id/comments",validateTokenCliente,createCalificacion);
 
-router.delete("/reservas/:id/comments/:commentId",validateTokenCliente,deleteCalificacion);
+router.delete("/reservas/:id/comments/",validateTokenCliente,deleteCalificacion);
 
 router.get('/reservas/:id/comments', getClasificacionRecorrido);
 
