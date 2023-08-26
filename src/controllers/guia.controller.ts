@@ -61,7 +61,7 @@ export const createGuia = async (req: TypedRequest<{}, GuiaBody>, res: Response)
     try {
         // No funciona
         // const usuario = await Usuario.findOne({
-        //     where: { id: usuarioId, rol: "guia" }
+        //     where: { id: usuarioId, rol: "GUIA" }
         // });
 
         const usuario = await Usuario.findOneBy({ id: usuarioId });

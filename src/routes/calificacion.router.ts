@@ -3,10 +3,10 @@ import { validateTokenCliente } from '../middlewares/validate.token';
 import { createCalificacion, deleteCalificacion, getClasificacionRecorrido } from '../controllers/calificacion.controller';
 const router = Router();
 
-router.post("/comment",validateTokenCliente,createCalificacion);
+router.post("/reservas/:id/comments",validateTokenCliente,createCalificacion);
 
-router.delete("/comment/:id",validateTokenCliente,deleteCalificacion);
+router.delete("/reservas/:id/comments/:commentId",validateTokenCliente,deleteCalificacion);
 
-router.get('/comment/:id', getClasificacionRecorrido);
+router.get('/reservas/:id/comments', getClasificacionRecorrido);
 
 export default router;

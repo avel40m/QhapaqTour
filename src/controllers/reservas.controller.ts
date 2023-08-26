@@ -20,7 +20,12 @@ interface TypedRequest<U extends ParamsDictionary, T> extends Request {
 
 export const getReservas = async (req: Request, res: Response) => {
     try {
-        const reservas = await Reservas.find();
+        const reservas = await Reservas.find({
+            relations: {
+                usuario: true,
+                recorrido: true
+            }
+        });
         return res.status(200).json(reservas);
     } catch (error) {
         if (error instanceof Error) {

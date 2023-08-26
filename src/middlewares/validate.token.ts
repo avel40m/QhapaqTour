@@ -17,7 +17,7 @@ declare global {
 
 export const validateTokenCliente = async (req:Request,res:Response,next:NextFunction) => {
     try {
-        const token = req.cookies.credentials.token;
+        const token = req.headers.authorization?.split(" ")[1];
         if(!token)
             return res.status(401).json({message: 'No se encontro el token'});
         const {id,rol} = jwt.verify(token,'somesecrettoken') as DecodeToken;
@@ -34,7 +34,7 @@ export const validateTokenCliente = async (req:Request,res:Response,next:NextFun
 
 export const validateTokenGuia = async (req:Request,res:Response,next:NextFunction) => {
     try {
-        const token = req.cookies.credentials.token;
+        const token = req.headers.authorization?.split(" ")[1]; 
         if(!token)
             return res.status(401).json({message: 'No se encontro el token'});
         const {id,rol} = jwt.verify(token,'somesecrettoken') as DecodeToken;

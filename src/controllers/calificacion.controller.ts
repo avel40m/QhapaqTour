@@ -5,11 +5,12 @@ import { Recorrido } from "../entities/recorrido.entity";
 
 // FALTA COMPLETAR EL ABM RECORRIDO PARA PODER USAR ESTÁ PETICIÓN
 export const createCalificacion = async (req:Request,res:Response) => {
+    const { id } = req.params;
     try {
         const {note,comentario} = req.body;
-        // const recorrido = await Recorrido.findOneOrFail({where: {id: Number(id)}});
-        // if(!recorrido)
-        //     return res.status(404).json({message: "No se encontro el recorrido"});
+        const recorrido = await Recorrido.findOneOrFail({where: {id: Number(id)}});
+        if(!recorrido)
+            return res.status(404).json({message: "No se encontro el recorrido"});
         const usuario = await Usuario.findOneOrFail({ where: {id: req.idUser}});
         if(!usuario)
             return res.status(404).json({message:"Usuario no encontrado"});
@@ -18,6 +19,7 @@ export const createCalificacion = async (req:Request,res:Response) => {
         calificacion.comentario = comentario;
         calificacion.fecha = new Date(Date.now());
         calificacion.usuario = usuario;
+        calificacion.recorrido = recorrido;
         await calificacion.save();
         res.status(200).json({message: "calificacion guardado"});
     } catch (error) {
@@ -51,11 +53,12 @@ export const deleteCalificacion = async (req: Request, res:Response) => {
 export const getClasificacionRecorrido = async (req: Request,res: Response) => {
     try {
         const id = req.params.id;
-        // const recorrido = await Recorrido.findOneOrFail({where: {id: Number(id)}});
-        // if(!recorrido)
-        //     return res.status(404).json({message: "No se encontro el recorrido"});
+        const recorrido = await Recorrido.findOneOrFail({where: {id: Number(id)}});
+        if(!recorrido)
+            return res.status(404).json({message: "No se encontro el recorrido"});
         const calificacion = await Calificacion.createQueryBuilder('clasificacion')
-        .where('clasificacion.usuarioId = :usuario',{usuario: id})
+        .leftJoinAndSelect('clasificacion.usuario', 'usuario')
+        .where('clasificacion.recorridoId = :usuario',{usuario: id})
         .getMany();
 
         return res.status(200).json(calificacion)

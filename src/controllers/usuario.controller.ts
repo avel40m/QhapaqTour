@@ -140,7 +140,7 @@ export const signIn = async (req: TypedRequest<{}, UserBody>, res: Response) => 
         }
         
         return res.status(201).cookie("credentials",createToken(usuarioEncontrado)).json({
-            message:"Usuario loggueado correctamente",
+            message:"Usuario logueado correctamente",
             token: createToken(usuarioEncontrado)
         });
     
