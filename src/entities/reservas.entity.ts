@@ -1,4 +1,4 @@
-import {BaseEntity,Entity,PrimaryGeneratedColumn,Column,CreateDateColumn,UpdateDateColumn,ManyToOne,OneToOne,JoinColumn, OneToMany} from 'typeorm'
+import {BaseEntity,Entity,PrimaryGeneratedColumn,Column,CreateDateColumn,UpdateDateColumn,ManyToOne,OneToOne, JoinColumn} from 'typeorm'
 import { Guia } from './guia.entity';
 import { Usuario } from './usuario.entity';
 import { Pago } from './pago.entity';
@@ -10,7 +10,7 @@ export class Reservas extends BaseEntity{
     id: number;
 
     @Column()
-    personas: number;
+    cantidadPersonas: number;
     
     @Column()
     precio: number;
@@ -18,11 +18,14 @@ export class Reservas extends BaseEntity{
     @Column()
     fecha: Date;
     
-    @Column()
-    tiempoInicial: number;
+    // @Column()
+    // tiempoInicial: number;
+    
+    // @Column()
+    // tiempoFinal: number;
     
     @Column()
-    tiempoFinal: number;
+    fechaHora: Date;
     
     @CreateDateColumn()
     createdAt: Date;
@@ -33,8 +36,9 @@ export class Reservas extends BaseEntity{
     @ManyToOne(() => Usuario, usuario => usuario.reservas)
     usuario: Usuario;
 
-    @OneToMany(() => Pago, pago => pago.reservas)
-    pago: Pago[];
+    @OneToOne(() => Pago)
+    @JoinColumn()
+    pago: Pago;
 
     @ManyToOne(() => Recorrido, recorrido => recorrido.reservas)
     recorrido: Recorrido;

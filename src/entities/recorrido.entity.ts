@@ -18,6 +18,9 @@ export class Recorrido extends BaseEntity{
     @CreateDateColumn()
     createdAt: Date;
     
+    @Column()
+    cantidadPersonas: number;
+
     @UpdateDateColumn()
     updatedAt: Date;
 

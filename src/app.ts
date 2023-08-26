@@ -7,6 +7,7 @@ import passportMiddleware from './middlewares/passport'
 import usuarioRoutes from './routes/usuario.router';
 import comentarioRoutes from './routes/calificacion.router';
 import recorridoRoutes from './routes/recorrido.router';
+import reservaRoutes from './routes/reserva.router';
 
 const app = express();
 
@@ -24,5 +25,6 @@ passport.use(passportMiddleware);
 app.use("/api",usuarioRoutes);
 app.use("/api",comentarioRoutes);
 app.use("/api",recorridoRoutes);
+app.use("/api",reservaRoutes);
 
 export default app;
