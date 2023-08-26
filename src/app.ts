@@ -5,6 +5,7 @@ import passport from 'passport';
 import cookieParser from 'cookie-parser';
 import passportMiddleware from './middlewares/passport'
 import usuarioRoutes from './routes/usuario.router';
+import guiaRoutes from './routes/reserva.router';
 import comentarioRoutes from './routes/calificacion.router';
 import recorridoRoutes from './routes/recorrido.router';
 import reservaRoutes from './routes/reserva.router';
@@ -23,6 +24,7 @@ passport.use(passportMiddleware);
 
 // Routes
 app.use("/api",usuarioRoutes);
+app.use("/api",guiaRoutes);
 app.use("/api",comentarioRoutes);
 app.use("/api",recorridoRoutes);
 app.use("/api",reservaRoutes);
