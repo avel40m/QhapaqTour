@@ -3,7 +3,6 @@ import { Usuario } from "../entities/usuario.entity";
 import { Calificacion } from "../entities/calificacion.entity";
 import { Recorrido } from "../entities/recorrido.entity";
 
-// FALTA COMPLETAR EL ABM RECORRIDO PARA PODER USAR ESTÁ PETICIÓN
 export const createCalificacion = async (req:Request,res:Response) => {
     const { id } = req.params;
     try {
@@ -49,7 +48,6 @@ export const deleteCalificacion = async (req: Request, res:Response) => {
     }
 }
 
-// FALTA COMPLETAR EL ABM RECORRIDO PARA PODER USAR ESTÁ PETICIÓN
 export const getClasificacionRecorrido = async (req: Request,res: Response) => {
     try {
         const id = req.params.id;

@@ -6,10 +6,11 @@ import {
    deleteLugar, 
    updateLugar
 } from './../controllers/lugar.controller';
+import { validateTokenGuia } from '../middlewares/validate.token';
 
 const router = Router();
 
-router.post('/lugares', createLugar);
+router.post('/lugares', validateTokenGuia,createLugar);
 router.get('/lugares', getLugares);
 router.get('/lugares/:id', getLugar);
 router.put('/lugares/:id', updateLugar);

@@ -2,6 +2,7 @@ import { type ParamsDictionary } from 'express-serve-static-core'
 import { type Request, type Response } from 'express';
 import { Usuario } from '../entities/usuario.entity';
 import { Guia } from '../entities/guia.entity';
+import { ROL } from '../utils/rol.enum';
 
 interface GuiaBody {
     usuarioId: number;
@@ -59,18 +60,17 @@ export const getGuia = async (req: TypedRequest<{ id: string }, {}>, res: Respon
 export const createGuia = async (req: TypedRequest<{}, GuiaBody>, res: Response) => {
     const { usuarioId, carnet, licencia, cedula } = req.body;
     try {
-        // No funciona
-        // const usuario = await Usuario.findOne({
-        //     where: { id: usuarioId, rol: "GUIA" }
-        // });
-
         const usuario = await Usuario.findOneBy({ id: usuarioId });
         if (!usuario) {
             return res.status(404).json({
                 message: 'Usuario no encontrado'
             });
         }
-
+        if (usuario.rol !== ROL.GUIA) {
+            return res.status(404).json({
+                message: "No cumple con el rol GUIA"
+            })
+        }
         const guia = new Guia();
         guia.carnet = carnet;
         guia.licencia = licencia;

@@ -30,7 +30,7 @@ interface TypedRequest<U extends ParamsDictionary, T> extends Request {
 }
 
 const createToken = (usuario: Usuario) => {
-    const token = jwt.sign({ id: usuario.id, email: usuario.email, rol: usuario.rol }, jwtSecret, { expiresIn: '5m' });
+    const token = jwt.sign({ id: usuario.id, email: usuario.email, rol: usuario.rol }, jwtSecret, { expiresIn: '30m' });
     const refreshToken = jwt.sign({ email: usuario.email, rol: usuario.rol }, jwtRefreshTokenSecret, { expiresIn: '90d' });
     
     refreshTokens.push(refreshToken);

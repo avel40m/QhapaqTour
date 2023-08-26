@@ -3,6 +3,8 @@ import { type Request, type Response } from 'express';
 import { Reservas } from '../entities/reservas.entity';
 import { Usuario } from '../entities/usuario.entity';
 import { Recorrido } from '../entities/recorrido.entity';
+import { RecorridoDTO } from '../dto/recorrido.dto';
+import { Pago } from '../entities/pago.entity';
 
 interface ReservaBody {
     clienteId: number;
@@ -112,6 +114,87 @@ export const createReserva = async (req: TypedRequest<{}, ReservaBody>, res: Res
         await reservaNueva.save();
 
         return res.status(201).json(reservaNueva);
+    } catch (error) {
+        if (error instanceof Error) {      
+            return res.status(500).json({
+              message: error.message
+            });
+        }
+    }
+}
+
+export const myReservas = async (req:Request,res:Response) => {
+    try {
+        const reservas = await Reservas
+        .createQueryBuilder("reservas")
+        .leftJoinAndSelect('reservas.recorrido', 'recorrido')
+        .leftJoinAndSelect('reservas.pago', 'pago')
+        .leftJoinAndSelect("recorrido.lugar","lugar")
+        .leftJoinAndSelect("recorrido.guia","guia")
+        .leftJoinAndSelect("guia.usuario","usuario")
+        .where("reservas.usuarioId = :id",{id: req.idUser})
+        .getMany();
+
+        const arregloRecorrido: RecorridoDTO[] = [];
+        reservas.forEach(reservas => {
+            const recorridoDto = new RecorridoDTO();
+
+            recorridoDto.id = reservas.id,
+            recorridoDto.cantidadPersonas = reservas.cantidadPersonas,
+            recorridoDto.precio = reservas.precio,
+            recorridoDto.pago = reservas.pago !== null ? "Pagado" : "No pagado",
+            recorridoDto.duracion = reservas.recorrido.duracion,
+            recorridoDto.nombre_lugar = reservas.recorrido.lugar.nombre,
+            recorridoDto.nombre_localidad = reservas.recorrido.lugar.localidad,
+            recorridoDto.nombre_regiones = reservas.recorrido.lugar.regiones,
+            recorridoDto.nombre_guia = reservas.recorrido.guia.usuario.nombre,
+            recorridoDto.apellido_guia = reservas.recorrido.guia.usuario.apellido,
+            recorridoDto.carnet_guia = reservas.recorrido.guia.carnet
+            arregloRecorrido.push(recorridoDto);
+    })
+
+        res.status(200).json(arregloRecorrido);
+    } catch (error) {
+        if (error instanceof Error) {      
+            return res.status(500).json({
+              message: error.message
+            });
+        }
+    }
+}
+
+export const generatePago = async (req:Request,res:Response) => {
+    try {
+        const { idreservas } = req.params;
+        const { metodoPago } = req.body;
+        const reservas = await Reservas
+        .createQueryBuilder("reservas")
+        .leftJoinAndSelect("reservas.pago","pago")
+        .where("reservas.id=:id",{id:idreservas})
+        .getOne();
+        if (!reservas) {
+            return res.status(404).json({message:"No se encontro la reserva"})
+        }
+        
+        if (reservas.pago !== null) {
+            return res.status(404).json({message:"La reserva está pagada"});
+        }
+
+        const usuario = await Usuario.findOneOrFail({where: req.idUser});
+        if (!usuario) {
+            return res.status(404).json({message:"No se encontro el usuario"})
+        }
+
+        const pago = Pago.create();
+        pago.metodoPago = metodoPago;
+        pago.total = reservas.cantidadPersonas * reservas.precio;
+        pago.usuario = usuario;
+        await pago.save();
+
+        await Reservas.update(idreservas,{
+            pago: pago
+        });
+        res.status(200).json({message:"Se realizo el pago"})
     } catch (error) {
         if (error instanceof Error) {      
             return res.status(500).json({

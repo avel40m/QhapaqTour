@@ -88,19 +88,6 @@ export const createLugar = async (req: Request, res: Response) => {
       lugar.localidad = localidad;
       lugar.regiones = regiones;
       lugar.url = url;
-  /*
-      // Verificar si la región es válida y existe en el objeto
-      if (regionesYlugares[regiones]) {
-        const recorridos = regionesYlugares[regiones].map(nombreRecorrido => {
-          const recorrido = new Recorrido();
-          recorrido.precio = lugar.precio; // Por ejemplo, puedes asignar el mismo precio al recorrido
-          // Otras propiedades del recorrido
-          recorrido.lugar = lugar; // Asociar el lugar al recorrido
-          return recorrido;
-        });
-        lugar.recorridos = recorridos;
-      }
-    */
       await lugar.save();
       return res.json(lugar);
     } catch (error) {
