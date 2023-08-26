@@ -178,17 +178,6 @@ export const signUp = async (req: TypedRequest<{}, UserBody>, res: Response) => 
         nuevoUsuario.rol = rol;
         nuevoUsuario.password = await createHash(password);
 
-        if (rol.toUpperCase() === 'GUIA') {
-            const guia = new Guia();
-            guia.carnet = req.body.carnet;
-            guia.cedula = req.body.cedula;
-            guia.licencia = req.body.licencia;
-
-            await guia.save();
-
-            nuevoUsuario.guia = guia;
-        }
-
         await nuevoUsuario.save();
 
         return res.status(201).json(nuevoUsuario);

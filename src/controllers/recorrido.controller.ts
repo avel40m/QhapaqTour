@@ -9,6 +9,7 @@ import { Recorrido } from '../entities/recorrido.entity';
 interface RecorridoBody {
     precio: number;
     duracion: number;
+    cantidadPersonas: number;
     guia: number;
     lugar: number;
 }
@@ -62,7 +63,7 @@ export const getRecorrido = async (req: TypedRequest<{ id: string }, {}>, res: R
 }
 
 export const createRecorrido = async (req: TypedRequest<{}, RecorridoBody>, res: Response) => {
-    const { precio, duracion, guia, lugar } = req.body;
+    const { precio, duracion, cantidadPersonas, guia, lugar } = req.body;
     try {
         if (!precio || !duracion || !guia || !lugar) {
             return res.status(400).json({
@@ -87,6 +88,7 @@ export const createRecorrido = async (req: TypedRequest<{}, RecorridoBody>, res:
         const recorrido = new Recorrido();
         recorrido.precio = precio;
         recorrido.duracion = duracion;
+        recorrido.cantidadPersonas = cantidadPersonas;
         recorrido.guia = guiaEncontrado;
         recorrido.lugar = lugarEncontrado;
 

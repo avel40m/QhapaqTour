@@ -75,10 +75,18 @@ export const createReserva = async (req: TypedRequest<{}, ReservaBody>, res: Res
                 message: 'La cantidad de pasajeros excede la capacidad del vehículo.'
             });
         }
+        
+        let fecha = new Date(fechaHora);
+        const fechaActual = new Date();
+        // Controlar que la fecha no sea anterior a la actual
+        if(fecha.getTime() < fechaActual.getTime()){
+            return res.status(400).json({
+                message: 'La fecha no debe ser anterior a la actual.'
+            });
+        }
 
         // Controlar que la fecha no coincida con la de otra reserva
-        let fecha = new Date(fechaHora);
-        const existeCoincidencia = recorrido.reservas.some(reserva => 
+        const existeCoincidencia = recorrido.reservas?.some(reserva => 
             reserva.fechaHora.getFullYear() === fecha.getFullYear() &&
             reserva.fechaHora.getMonth() === fecha.getMonth() &&
             reserva.fechaHora.getDate() === fecha.getDate()

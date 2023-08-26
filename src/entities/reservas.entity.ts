@@ -14,9 +14,6 @@ export class Reservas extends BaseEntity{
     
     @Column()
     precio: number;
-
-    @Column()
-    fecha: Date;
     
     // @Column()
     // tiempoInicial: number;

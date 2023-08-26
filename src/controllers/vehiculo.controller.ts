@@ -32,7 +32,7 @@ export const createVehiculo = async (req: Request, res: Response) => {
     if (error instanceof Error) {
       if (error.message.includes("Data truncated for column 'tipo'")) {
         return res.status(400).json({
-            message: 'El tipo solo puede tomar los valores AUTOMOVIL, CAMIONETA y MOTOCICLETA.'
+            message: 'El tipo solo puede tomar los valores MOTO, AUTO, CAMIONETA, COLECTIVO, VAN, TRAFIC y MINIBUS.'
         });
       }
       

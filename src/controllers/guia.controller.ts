@@ -59,6 +59,11 @@ export const getGuia = async (req: TypedRequest<{ id: string }, {}>, res: Respon
 export const createGuia = async (req: TypedRequest<{}, GuiaBody>, res: Response) => {
     const { usuarioId, carnet, licencia, cedula } = req.body;
     try {
+        // No funciona
+        // const usuario = await Usuario.findOne({
+        //     where: { id: usuarioId, rol: "guia" }
+        // });
+
         const usuario = await Usuario.findOneBy({ id: usuarioId });
         if (!usuario) {
             return res.status(404).json({
@@ -70,6 +75,8 @@ export const createGuia = async (req: TypedRequest<{}, GuiaBody>, res: Response)
         guia.carnet = carnet;
         guia.licencia = licencia;
         guia.cedula = cedula;
+
+        await guia.save();
 
         usuario.guia = guia;
         

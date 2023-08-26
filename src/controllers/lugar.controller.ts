@@ -6,7 +6,7 @@ interface LugarBody {
   nombre: string;
   latitud: string;
   longitud: string;
-  precio: number;
+  localidad: string;
   regiones: REGIONES;
   url: string;
 }
@@ -79,16 +79,16 @@ const regionesYlugares = {
 
 export const createLugar = async (req: Request, res: Response) => {
     try {
-      const { nombre, latitud, longitud, precio, regiones, url }: LugarBody = req.body;
+      const { nombre, latitud, longitud, localidad, regiones, url }: LugarBody = req.body;
   
       const lugar = new Lugar();
       lugar.nombre = nombre;
       lugar.latitud = latitud;
       lugar.longitud = longitud;
-      lugar.precio = precio;
+      lugar.localidad = localidad;
       lugar.regiones = regiones;
       lugar.url = url;
-  
+  /*
       // Verificar si la región es válida y existe en el objeto
       if (regionesYlugares[regiones]) {
         const recorridos = regionesYlugares[regiones].map(nombreRecorrido => {
@@ -100,7 +100,7 @@ export const createLugar = async (req: Request, res: Response) => {
         });
         lugar.recorridos = recorridos;
       }
-  
+    */
       await lugar.save();
       return res.json(lugar);
     } catch (error) {
@@ -144,11 +144,11 @@ export const updateLugar = async (req: Request, res: Response) => {
       if (!lugar) return res.status(404).json({ message: "Lugar not found" });
   
       // Actualizar los datos del lugar según el cuerpo de la solicitud
-      const { nombre, latitud, longitud, precio, regiones, url }: LugarBody = req.body;
+      const { nombre, latitud, longitud, localidad, regiones, url }: LugarBody = req.body;
       lugar.nombre = nombre;
       lugar.latitud = latitud;
       lugar.longitud = longitud;
-      lugar.precio = precio;
+      lugar.localidad = localidad;
       lugar.regiones = regiones;
       lugar.url = url;
   
