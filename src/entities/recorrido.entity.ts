@@ -30,9 +30,9 @@ export class Recorrido extends BaseEntity{
     @ManyToOne(() => Lugar, lugar => lugar.recorridos)
     lugar: Lugar
 
-    @OneToMany(() => Calificacion,calificacion => calificacion.recorrido)
+    @OneToMany(() => Calificacion,calificacion => calificacion.recorrido,{cascade: true})
     calificaciones: Calificacion[]
 
-    @OneToMany(() => Reservas, reservas => reservas.recorrido)
+    @OneToMany(() => Reservas, reservas => reservas.recorrido,{cascade: true})
     reservas: Reservas[];
 }

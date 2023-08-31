@@ -44,12 +44,12 @@ export class Usuario extends BaseEntity{
     @JoinColumn()
     guia: Guia
 
-    @OneToMany(() => Reservas, reservas => reservas.usuario)
+    @OneToMany(() => Reservas, reservas => reservas.usuario,{cascade: true})
     reservas: Reservas[]
 
-    @OneToMany(() => Calificacion, calificacion => calificacion.usuario)
+    @OneToMany(() => Calificacion, calificacion => calificacion.usuario,{cascade: true})
     calificaciones: Calificacion[];
 
-    @OneToMany(() => Pago, pago => pago.usuario)
+    @OneToMany(() => Pago, pago => pago.usuario,{cascade: true})
     pagos: Pago[];
 }

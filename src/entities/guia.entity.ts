@@ -26,9 +26,9 @@ export class Guia extends BaseEntity{
     @OneToOne(() => Usuario, (usuario) => usuario.guia)
     usuario: Usuario;
 
-    @OneToMany(() => Vehiculo,(vehiculo) => vehiculo.guia)
+    @OneToMany(() => Vehiculo,(vehiculo) => vehiculo.guia,{cascade: true})
     vehiculos: Vehiculo[]
     
-    @OneToMany(() => Recorrido, (recorrido) => recorrido.guia)
+    @OneToMany(() => Recorrido, (recorrido) => recorrido.guia,{cascade: true})
     recorridos: Recorrido[]
 }

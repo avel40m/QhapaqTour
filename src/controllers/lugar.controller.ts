@@ -2,6 +2,7 @@ import { Request, Response } from 'express';
 import { Lugar } from './../entities/lugar.entity';
 import { REGIONES } from './../utils/regiones.enum';
 import { Recorrido } from '../entities/recorrido.entity';
+import path from 'path';
 interface LugarBody {
   nombre: string;
   latitud: string;
@@ -79,15 +80,15 @@ const regionesYlugares = {
 
 export const createLugar = async (req: Request, res: Response) => {
     try {
-      const { nombre, latitud, longitud, localidad, regiones, url }: LugarBody = req.body;
-  
+      const { nombre, latitud, longitud, localidad, regiones }: LugarBody = req.body;
+      
       const lugar = new Lugar();
       lugar.nombre = nombre;
       lugar.latitud = latitud;
       lugar.longitud = longitud;
       lugar.localidad = localidad;
       lugar.regiones = regiones;
-      lugar.url = url;
+      lugar.url = req.file?.filename as string;
       await lugar.save();
       return res.json(lugar);
     } catch (error) {
@@ -167,3 +168,19 @@ export const updateLugar = async (req: Request, res: Response) => {
       }
     }
   };
+
+  export const getImages = async (req:Request,res:Response) => {
+    try {
+      const { idImage } = req.params;
+      const lugar:Lugar = await Lugar.findOneOrFail({where: {id: Number(idImage)}});
+      if(!lugar)
+        return res.status(404).json({message: "Imagen no encontrada"});
+     
+      const imagePath = path.join(__dirname , '../images/', lugar.url);
+      res.sendFile(imagePath);
+    } catch (error) {
+      if (error instanceof Error) {
+        res.status(500).json({message: error.message});
+      }
+    }
+  }

@@ -34,6 +34,6 @@ export class Lugar extends BaseEntity{
     @UpdateDateColumn()
     updatedAt: Date;
 
-    @OneToMany(() => Recorrido, recorrido => recorrido.lugar)
+    @OneToMany(() => Recorrido, recorrido => recorrido.lugar,{cascade: true})
     recorridos: Recorrido[];
 }
