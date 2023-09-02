@@ -3,6 +3,15 @@ import { Lugar } from './../entities/lugar.entity';
 import { REGIONES } from './../utils/regiones.enum';
 import { Recorrido } from '../entities/recorrido.entity';
 import path from 'path';
+import cloudinaryModule from 'cloudinary';
+const cloudinary = cloudinaryModule.v2;
+
+cloudinary.config({ 
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME, 
+  api_key: process.env.CLOUDINARY_API_KEY, 
+  api_secret: process.env.CLOUDINARY_API_SECRET
+});
+
 interface LugarBody {
   nombre: string;
   latitud: string;
@@ -81,14 +90,22 @@ const regionesYlugares = {
 export const createLugar = async (req: Request, res: Response) => {
     try {
       const { nombre, latitud, longitud, localidad, regiones,url }: LugarBody = req.body;
+      const file = req.file;
       
+      if (!file) {        
+        return res.status(404).json({message: "No envio imagen"})
+      }
+      const result = await cloudinary.uploader.upload(file.path);
+      if (!result) {
+        return res.status(404).json({message:"no se pudo guardar la imagen en cloudinary"});
+      }
       const lugar = new Lugar();
       lugar.nombre = nombre;
       lugar.latitud = latitud;
       lugar.longitud = longitud;
       lugar.localidad = localidad;
       lugar.regiones = regiones;
-      lugar.url = url;
+      lugar.url = result.url;
       await lugar.save();
       return res.json(lugar);
     } catch (error) {
