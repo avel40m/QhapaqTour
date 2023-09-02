@@ -3,6 +3,7 @@ import { type Request, type Response } from 'express';
 import { Usuario } from '../entities/usuario.entity';
 import { Guia } from '../entities/guia.entity';
 import { ROL } from '../utils/rol.enum';
+import { GuiaDTO } from '../dto/guia.dto';
 
 interface GuiaBody {
     usuarioId: number;
@@ -27,7 +28,7 @@ export const getGuias = async (req: Request, res: Response) => {
     } catch (error) {
         if (error instanceof Error) {
             return res.status(500).json({
-              message: error.message
+                message: error.message
             });
         }
     }
@@ -51,7 +52,7 @@ export const getGuia = async (req: TypedRequest<{ id: string }, {}>, res: Respon
     } catch (error) {
         if (error instanceof Error) {
             return res.status(500).json({
-              message: error.message
+                message: error.message
             });
         }
     }
@@ -79,14 +80,23 @@ export const createGuia = async (req: TypedRequest<{}, GuiaBody>, res: Response)
         await guia.save();
 
         usuario.guia = guia;
-        
+
         await usuario.save();
 
-        return res.status(201).json(usuario);
+        const guiaDTO = new GuiaDTO;
+        email: usuario.email;
+        username: usuario.username; 
+        apellido: usuario.apellido;
+        nombre: usuario.nombre;
+        dni: usuario.dni;
+        carnet: usuario.guia.carnet;
+        licencia: usuario.guia.licencia;
+        cedula: usuario.guia.cedula;
+        return res.status(201).json(guiaDTO);
     } catch (error) {
-        if (error instanceof Error) {      
+        if (error instanceof Error) {
             return res.status(500).json({
-              message: error.message
+                message: error.message
             });
         }
     }
@@ -108,9 +118,9 @@ export const updateGuia = async (req: TypedRequest<{ id: string }, GuiaBody>, re
 
         return res.sendStatus(204);
     } catch (error) {
-        if (error instanceof Error) {      
+        if (error instanceof Error) {
             return res.status(500).json({
-              message: error.message
+                message: error.message
             });
         }
     }

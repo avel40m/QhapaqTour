@@ -4,6 +4,8 @@ import { Usuario } from '../entities/usuario.entity'
 import { Guia } from '../entities/guia.entity';
 import { Lugar } from '../entities/lugar.entity';
 import { Recorrido } from '../entities/recorrido.entity';
+import { RecorridoCalificacionDTO } from '../dto/recorrido.dto';
+import { Calificacion } from '../entities/calificacion.entity';
 
 
 interface RecorridoBody {
@@ -21,17 +23,32 @@ interface TypedRequest<U extends ParamsDictionary, T> extends Request {
 
 export const getRecorridos = async (req: Request, res: Response) => {
     try {
-        const recorridos = await Recorrido.find({ 
-            relations: {
-                guia: true,
-                lugar: true
-            }
-        });
-        return res.status(200).json(recorridos);
+        const recorridos = await Recorrido.createQueryBuilder("recorrido")
+            .leftJoinAndSelect("recorrido.guia", "guia")
+            .leftJoinAndSelect("guia.usuario", "usuario")
+            .leftJoinAndSelect("recorrido.lugar", "lugar")
+            .leftJoinAndSelect("recorrido.calificaciones", "calificaciones")
+            .getOne();
+            const clasificacionArreglo: Calificacion[] = [];
+            recorridos?.calificaciones.forEach(calisificacion => {
+                clasificacionArreglo.push(calisificacion);
+            })
+        const recorridoCalificacionDTO = new RecorridoCalificacionDTO;
+        recorridoCalificacionDTO.username = recorridos?.guia.usuario.username as string;
+        recorridoCalificacionDTO.nombre = recorridos?.guia.usuario.nombre as string;
+        recorridoCalificacionDTO.apellido = recorridos?.guia.usuario.apellido as string;
+        recorridoCalificacionDTO.precio = recorridos?.precio as number;
+        recorridoCalificacionDTO.duracion = recorridos?.duracion as number;
+        recorridoCalificacionDTO.createdAt = String(recorridos?.createdAt);
+        recorridoCalificacionDTO.cantidadPersonas = recorridos?.cantidadPersonas as number;
+        recorridoCalificacionDTO.lugar = recorridos?.lugar as Lugar;
+        recorridoCalificacionDTO.calificaciones = clasificacionArreglo;
+        
+        return res.status(200).json(recorridoCalificacionDTO);
     } catch (error) {
         if (error instanceof Error) {
             return res.status(500).json({
-              message: error.message
+                message: error.message
             });
         }
     }
@@ -40,7 +57,7 @@ export const getRecorridos = async (req: Request, res: Response) => {
 export const getRecorrido = async (req: TypedRequest<{ id: string }, {}>, res: Response) => {
     const { id } = req.params
     try {
-        const recorrido = await Recorrido.findOne({ 
+        const recorrido = await Recorrido.findOne({
             where: { id: parseInt(id) },
             relations: {
                 guia: true,
@@ -56,7 +73,7 @@ export const getRecorrido = async (req: TypedRequest<{ id: string }, {}>, res: R
     } catch (error) {
         if (error instanceof Error) {
             return res.status(500).json({
-              message: error.message
+                message: error.message
             });
         }
     }
@@ -96,9 +113,9 @@ export const createRecorrido = async (req: TypedRequest<{}, RecorridoBody>, res:
 
         return res.status(201).json(recorrido);
     } catch (error) {
-        if (error instanceof Error) {      
+        if (error instanceof Error) {
             return res.status(500).json({
-              message: error.message
+                message: error.message
             });
         }
     }
@@ -141,9 +158,9 @@ export const updateRecorrido = async (req: TypedRequest<{ id: string }, Recorrid
 
         return res.sendStatus(204);
     } catch (error) {
-        if (error instanceof Error) {      
+        if (error instanceof Error) {
             return res.status(500).json({
-              message: error.message
+                message: error.message
             });
         }
     }
@@ -162,9 +179,9 @@ export const deleteRecorrido = async (req: TypedRequest<{ id: string }, {}>, res
 
         return res.sendStatus(204);
     } catch (error) {
-        if (error instanceof Error) {      
+        if (error instanceof Error) {
             return res.status(500).json({
-              message: error.message
+                message: error.message
             });
         }
     }

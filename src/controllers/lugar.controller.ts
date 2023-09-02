@@ -80,7 +80,7 @@ const regionesYlugares = {
 
 export const createLugar = async (req: Request, res: Response) => {
     try {
-      const { nombre, latitud, longitud, localidad, regiones }: LugarBody = req.body;
+      const { nombre, latitud, longitud, localidad, regiones,url }: LugarBody = req.body;
       
       const lugar = new Lugar();
       lugar.nombre = nombre;
@@ -88,7 +88,7 @@ export const createLugar = async (req: Request, res: Response) => {
       lugar.longitud = longitud;
       lugar.localidad = localidad;
       lugar.regiones = regiones;
-      lugar.url = req.file?.filename as string;
+      lugar.url = url;
       await lugar.save();
       return res.json(lugar);
     } catch (error) {

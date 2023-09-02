@@ -5,6 +5,7 @@ import jwt from 'jsonwebtoken'
 import { Usuario } from '../entities/usuario.entity'
 import { ROL } from '../utils/rol.enum';
 import { Guia } from '../entities/guia.entity';
+import { UsuarioDTO } from '../dto/usuario.dto';
 
 const jwtSecret = 'somesecrettoken'
 const jwtRefreshTokenSecret = 'somesecrettokenrefresh'
@@ -180,7 +181,15 @@ export const signUp = async (req: TypedRequest<{}, UserBody>, res: Response) => 
 
         await nuevoUsuario.save();
 
-        return res.status(201).json(nuevoUsuario);
+        const usuarioDTO = new UsuarioDTO;
+        usuarioDTO.email = email;
+        usuarioDTO.username = username;
+        usuarioDTO.apellido = apellido;
+        usuarioDTO.nombre = nombre;
+        usuarioDTO.dni = dni;
+        usuarioDTO.rol = rol;
+
+        return res.status(201).json(usuarioDTO);
     } catch (error) {
         if (error instanceof Error) {
             if (error.message.includes("Data truncated for column 'rol'")) {
