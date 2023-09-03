@@ -1,0 +1,12 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const express_1 = require("express");
+const validate_token_1 = require("../middlewares/validate.token");
+const reservas_controller_1 = require("../controllers/reservas.controller");
+const router = (0, express_1.Router)();
+router.get('/reservas/:id', validate_token_1.validateTokenCliente, reservas_controller_1.getReserva);
+router.get('/reservas', validate_token_1.validateTokenCliente, reservas_controller_1.getReservas);
+router.post("/reservas", validate_token_1.validateTokenCliente, reservas_controller_1.createReserva);
+router.get("/reserva", validate_token_1.validateTokenCliente, reservas_controller_1.myReservas);
+router.post("/reservas/:idreservas/pago", validate_token_1.validateTokenCliente, reservas_controller_1.generatePago);
+exports.default = router;
