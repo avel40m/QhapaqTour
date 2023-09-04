@@ -30,12 +30,15 @@ export const getRecorridos = async (req: Request, res: Response) => {
             .leftJoinAndSelect("recorrido.calificaciones", "calificaciones")
             .getMany();
             const arregloRecorridoClasificacionDTO: RecorridoCalificacionDTO[]=[];
-            recorridos.map(recorrido => {
+            
+            recorridos.forEach(recorrido => {
                 const recorridoCalificacionDTO = new RecorridoCalificacionDTO;
                 const clasificacionArreglo: Calificacion[] = [];
                 recorrido.calificaciones.forEach(calisificacion => {
                     clasificacionArreglo.push(calisificacion);
                 })
+               
+                recorridoCalificacionDTO.idRecorrido = recorrido.id;
                 recorridoCalificacionDTO.username = recorrido?.guia.usuario.username as string;
                 recorridoCalificacionDTO.nombre = recorrido?.guia.usuario.nombre as string;
                 recorridoCalificacionDTO.apellido = recorrido?.guia.usuario.apellido as string;
@@ -44,8 +47,9 @@ export const getRecorridos = async (req: Request, res: Response) => {
                 recorridoCalificacionDTO.createdAt = String(recorrido?.createdAt);
                 recorridoCalificacionDTO.cantidadPersonas = recorrido?.cantidadPersonas as number;
                 recorridoCalificacionDTO.lugar = recorrido?.lugar as Lugar;
-                recorridoCalificacionDTO.calificaciones = clasificacionArreglo;
+                recorridoCalificacionDTO.calificaciones = clasificacionArreglo;  
                 arregloRecorridoClasificacionDTO.push(recorridoCalificacionDTO);
+                            
             })
         
         return res.status(200).json(arregloRecorridoClasificacionDTO);
