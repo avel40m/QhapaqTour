@@ -6,9 +6,9 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "ts-node-dev --respawn src/index.ts",
-    "build":"tsc",
+    "build": "tsc",
     "start": "node dist/index.js"
-    },
+  },
   "keywords": [],
   "author": "",
   "license": "ISC",
@@ -24,10 +24,10 @@
     "jsonwebtoken": "^9.0.1",
     "morgan": "^1.10.0",
     "multer": "^1.4.5-lts.1",
-    "mysql": "^2.18.1",
     "passport": "^0.6.0",
     "passport-jwt": "^4.0.1",
     "passport-local": "^1.0.0",
+    "pg": "^8.11.3",
     "reflect-metadata": "^0.1.13",
     "swagger-jsdoc": "^6.2.8",
     "swagger-ui-express": "^5.0.0",

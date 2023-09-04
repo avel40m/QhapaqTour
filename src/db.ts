@@ -9,11 +9,11 @@ import { Pago } from './entities/pago.entity';
 import { Recorrido } from './entities/recorrido.entity';
 
 export const AppDataSource = new DataSource({
-    type: 'mysql',
-    port: 3307,
-    username: 'root',
+    type: 'postgres',
+    port: 5432,
+    username: 'admin',
     password: 'root',
     database: 'QhapaqTour',
-    // synchronize: true,
+    synchronize: true,
     entities: [Usuario,Guia,Vehiculo,Reservas,Calificacion,Recorrido,Lugar,Pago]
 });
