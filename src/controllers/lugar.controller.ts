@@ -3,24 +3,15 @@ import { Lugar } from './../entities/lugar.entity';
 import { REGION } from './../utils/region.enum';
 import { Recorrido } from '../entities/recorrido.entity';
 import path from 'path';
-import { promises as fs } from 'fs'
-import cloudinaryModule from 'cloudinary';
-const cloudinary = cloudinaryModule.v2;
-
-cloudinary.config({ 
-  cloud_name: process.env.CLOUDINARY_CLOUD_NAME, 
-  api_key: process.env.CLOUDINARY_API_KEY, 
-  api_secret: process.env.CLOUDINARY_API_SECRET
-});
 
 interface LugarBody {
   nombre: string;
   latitud: string;
   longitud: string;
   localidad: string;
-  region: REGION;
+  regiones: REGION;
+  url: string;
 }
-
 
 // Definición de las regiones y sus lugares
 const regionesYlugares = {
@@ -89,34 +80,17 @@ const regionesYlugares = {
 
 export const createLugar = async (req: Request, res: Response) => {
     try {
-      const { nombre, latitud, longitud, localidad, region }: LugarBody = req.body;
-      const file = req.file;
-      
-      if (!file) {        
-        return res.status(404).json({message: "No envio imagen"})
-      }
 
-      // console.log({ 
-      //   cloud_name: process.env.CLOUDINARY_CLOUD_NAME, 
-      //   api_key: process.env.CLOUDINARY_API_KEY, 
-      //   api_secret: process.env.CLOUDINARY_API_SECRET
-      // })
-      const result = await cloudinary.uploader.upload(file.path);
-      if (!result) {
-        return res.status(404).json({message:"no se pudo guardar la imagen en cloudinary"});
-      }
+      const { nombre, latitud, longitud, localidad, regiones,url }: LugarBody = req.body;
       const lugar = new Lugar();
       lugar.nombre = nombre;
       lugar.latitud = latitud;
       lugar.longitud = longitud;
       lugar.localidad = localidad;
-      lugar.region = region;
-      lugar.url = result.url;
-      lugar.publicId = result.public_id;
-
-      await lugar.save();
-      await fs.unlink(file.path)
+      lugar.region = regiones;
+      lugar.url = url;
       
+      await lugar.save();
       return res.json(lugar);
       // return res.json('subida');
     } catch (error) {
@@ -161,22 +135,13 @@ export const updateLugar = async (req: Request, res: Response) => {
       if (!lugar) return res.status(404).json({ message: "Lugar no encontrado" });
   
       // Actualizar los datos del lugar según el cuerpo de la solicitud
-      const { nombre, latitud, longitud, localidad, region }: LugarBody = req.body;
+      const { nombre, latitud, longitud, localidad, regiones,url }: LugarBody = req.body;
       lugar.nombre = nombre;
       lugar.latitud = latitud;
       lugar.longitud = longitud;
       lugar.localidad = localidad;
-      lugar.region = region;
-
-      if (file) {
-        await cloudinary.uploader.destroy(lugar.publicId)
-        const result = await cloudinary.uploader.upload(file.path)
-        lugar.url = result.url;
-        lugar.publicId = result.public_id
-  
-        await fs.unlink(file.path)
-      }
-  
+      lugar.region = regiones;
+      lugar.url = url;  
       // No es necesario actualizar los recorridos ya que no estamos creando nuevos recorridos aquí
   
       await lugar.save();
@@ -199,7 +164,6 @@ export const updateLugar = async (req: Request, res: Response) => {
       if (!lugar) {
         return res.status(404).json({ message: "Lugar no encontrado" });
       }
-      await cloudinary.uploader.destroy(lugar.publicId);
       await Lugar.delete(id);
   
       return res.sendStatus(204);

@@ -47,8 +47,7 @@ export const getRecorridos = async (req: Request, res: Response) => {
                 recorridoCalificacionDTO.createdAt = String(recorrido?.createdAt);
                 recorridoCalificacionDTO.cantidadPersonas = recorrido?.cantidadPersonas as number;
                 recorridoCalificacionDTO.lugar = recorrido?.lugar as Lugar;
-                recorridoCalificacionDTO.calificaciones = clasificacionArreglo; 
-                 
+                recorridoCalificacionDTO.calificaciones = clasificacionArreglo;  
                 arregloRecorridoClasificacionDTO.push(recorridoCalificacionDTO);
             })
         
