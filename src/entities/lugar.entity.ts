@@ -1,5 +1,5 @@
-import {BaseEntity,Entity,PrimaryGeneratedColumn,Column,CreateDateColumn,UpdateDateColumn,OneToMany, JoinColumn} from 'typeorm'
-import { REGIONES } from '../utils/regiones.enum';
+import {BaseEntity,Entity,PrimaryGeneratedColumn,Column,CreateDateColumn,UpdateDateColumn,OneToMany} from 'typeorm'
+import { REGION } from '../utils/region.enum';
 import { Recorrido } from './recorrido.entity';
 
 @Entity()
@@ -21,12 +21,15 @@ export class Lugar extends BaseEntity{
     
     @Column({
         type: 'enum',
-        enum: REGIONES
+        enum: REGION
     })
-    regiones: REGIONES;
+    region: REGION;
     
     @Column()
     url: string;
+
+    @Column()
+    publicId: string;
     
     @CreateDateColumn()
     createdAt: Date;

@@ -70,6 +70,7 @@ export const refresh = async (req: Request, res: Response) => {
 }
 
 const comparePassword = async (usuario: Usuario, password: string): Promise<Boolean> => {
+    console.log(usuario)
     return await bcrypt.compare(password, usuario.password)
 }
 
@@ -124,7 +125,7 @@ export const signIn = async (req: TypedRequest<{}, UserBody>, res: Response) => 
         }
 
         const usuarioEncontrado = await Usuario.createQueryBuilder('usuario')
-        .where('usuario.email = :email or usuario.username = :email2',{email: email,email2:email})
+        .where('usuario.email = :email or usuario.username = :username', { email: email, username: email})
         .getOne();
 
         if (!usuarioEncontrado) {
@@ -139,10 +140,16 @@ export const signIn = async (req: TypedRequest<{}, UserBody>, res: Response) => 
                 message: 'Credenciales incorrectas.'
             });
         }
+
+        const { id, username, rol } = usuarioEncontrado;
+
+        const user = { id, username, rol };
+        const token = createToken(usuarioEncontrado);
         
-        return res.status(201).cookie("credentials",createToken(usuarioEncontrado)).json({
-            message:"Usuario logueado correctamente",
-            token: createToken(usuarioEncontrado)
+        return res.status(201).cookie("credentials", token).json({
+            message: "Usuario logueado correctamente",
+            user,
+            token
         });
     
     } catch (error) {

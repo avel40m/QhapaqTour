@@ -146,7 +146,7 @@ export const myReservas = async (req:Request,res:Response) => {
             recorridoDto.duracion = reservas.recorrido.duracion,
             recorridoDto.nombre_lugar = reservas.recorrido.lugar.nombre,
             recorridoDto.nombre_localidad = reservas.recorrido.lugar.localidad,
-            recorridoDto.nombre_regiones = reservas.recorrido.lugar.regiones,
+            recorridoDto.nombre_region = reservas.recorrido.lugar.region,
             recorridoDto.nombre_guia = reservas.recorrido.guia.usuario.nombre,
             recorridoDto.apellido_guia = reservas.recorrido.guia.usuario.apellido,
             recorridoDto.carnet_guia = reservas.recorrido.guia.carnet

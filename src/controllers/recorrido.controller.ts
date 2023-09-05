@@ -28,23 +28,31 @@ export const getRecorridos = async (req: Request, res: Response) => {
             .leftJoinAndSelect("guia.usuario", "usuario")
             .leftJoinAndSelect("recorrido.lugar", "lugar")
             .leftJoinAndSelect("recorrido.calificaciones", "calificaciones")
-            .getOne();
-            const clasificacionArreglo: Calificacion[] = [];
-            recorridos?.calificaciones.forEach(calisificacion => {
-                clasificacionArreglo.push(calisificacion);
+            .getMany();
+            const arregloRecorridoClasificacionDTO: RecorridoCalificacionDTO[]=[];
+            
+            recorridos.forEach(recorrido => {
+                const recorridoCalificacionDTO = new RecorridoCalificacionDTO;
+                const clasificacionArreglo: Calificacion[] = [];
+                recorrido.calificaciones.forEach(calisificacion => {
+                    clasificacionArreglo.push(calisificacion);
+                })
+               
+                recorridoCalificacionDTO.idRecorrido = recorrido.id;
+                recorridoCalificacionDTO.username = recorrido?.guia.usuario.username as string;
+                recorridoCalificacionDTO.nombre = recorrido?.guia.usuario.nombre as string;
+                recorridoCalificacionDTO.apellido = recorrido?.guia.usuario.apellido as string;
+                recorridoCalificacionDTO.precio = recorrido?.precio as number;
+                recorridoCalificacionDTO.duracion = recorrido?.duracion as number;
+                recorridoCalificacionDTO.createdAt = String(recorrido?.createdAt);
+                recorridoCalificacionDTO.cantidadPersonas = recorrido?.cantidadPersonas as number;
+                recorridoCalificacionDTO.lugar = recorrido?.lugar as Lugar;
+                recorridoCalificacionDTO.calificaciones = clasificacionArreglo; 
+                 
+                arregloRecorridoClasificacionDTO.push(recorridoCalificacionDTO);
             })
-        const recorridoCalificacionDTO = new RecorridoCalificacionDTO;
-        recorridoCalificacionDTO.username = recorridos?.guia.usuario.username as string;
-        recorridoCalificacionDTO.nombre = recorridos?.guia.usuario.nombre as string;
-        recorridoCalificacionDTO.apellido = recorridos?.guia.usuario.apellido as string;
-        recorridoCalificacionDTO.precio = recorridos?.precio as number;
-        recorridoCalificacionDTO.duracion = recorridos?.duracion as number;
-        recorridoCalificacionDTO.createdAt = String(recorridos?.createdAt);
-        recorridoCalificacionDTO.cantidadPersonas = recorridos?.cantidadPersonas as number;
-        recorridoCalificacionDTO.lugar = recorridos?.lugar as Lugar;
-        recorridoCalificacionDTO.calificaciones = clasificacionArreglo;
         
-        return res.status(200).json(recorridoCalificacionDTO);
+        return res.status(200).json(arregloRecorridoClasificacionDTO);
     } catch (error) {
         if (error instanceof Error) {
             return res.status(500).json({
