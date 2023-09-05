@@ -14,18 +14,11 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.getImages = exports.deleteLugar = exports.updateLugar = exports.getLugar = exports.getLugares = exports.createLugar = void 0;
 const lugar_entity_1 = require("./../entities/lugar.entity");
-const regiones_enum_1 = require("./../utils/regiones.enum");
+const region_enum_1 = require("./../utils/region.enum");
 const path_1 = __importDefault(require("path"));
-const cloudinary_1 = __importDefault(require("cloudinary"));
-const cloudinary = cloudinary_1.default.v2;
-cloudinary.config({
-    cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
-    api_key: process.env.CLOUDINARY_API_KEY,
-    api_secret: process.env.CLOUDINARY_API_SECRET
-});
 // Definición de las regiones y sus lugares
 const regionesYlugares = {
-    [regiones_enum_1.REGIONES.PUNA]: [
+    [region_enum_1.REGION.PUNA]: [
         "ABRA PAMPA",
         "BARRANCAS (ABDÓN CASTRO TOLAY)",
         "SUSQUES",
@@ -44,7 +37,7 @@ const regionesYlugares = {
         "SAUSALITO",
         "YAVI",
     ],
-    [regiones_enum_1.REGIONES.QUEBRADA]: [
+    [region_enum_1.REGION.QUEBRADA]: [
         "ABRA PAMPA",
         "BARRANCAS",
         "SUSQUES",
@@ -63,7 +56,7 @@ const regionesYlugares = {
         "SAUSALITO",
         "YAVI",
     ],
-    [regiones_enum_1.REGIONES.VALLE]: [
+    [region_enum_1.REGION.VALLES]: [
         "ANGOSTO DE JAIRO",
         "EL CARMEN",
         "SAN SALVADOR DE JUJUY",
@@ -76,7 +69,7 @@ const regionesYlugares = {
         "TIRAXI",
         "VILLA JARDIN DE REYES",
     ],
-    [regiones_enum_1.REGIONES.YUNGA]: [
+    [region_enum_1.REGION.YUNGAS]: [
         "SAN FRANCISCO",
         "VILLAMONTE",
         "CALILEGUA",
@@ -90,23 +83,16 @@ const regionesYlugares = {
 const createLugar = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { nombre, latitud, longitud, localidad, regiones, url } = req.body;
-        const file = req.file;
-        if (!file) {
-            return res.status(404).json({ message: "No envio imagen" });
-        }
-        const result = yield cloudinary.uploader.upload(file.path);
-        if (!result) {
-            return res.status(404).json({ message: "no se pudo guardar la imagen en cloudinary" });
-        }
         const lugar = new lugar_entity_1.Lugar();
         lugar.nombre = nombre;
         lugar.latitud = latitud;
         lugar.longitud = longitud;
         lugar.localidad = localidad;
-        lugar.regiones = regiones;
-        lugar.url = result.url;
+        lugar.region = regiones;
+        lugar.url = url;
         yield lugar.save();
         return res.json(lugar);
+        // return res.json('subida');
     }
     catch (error) {
         if (error instanceof Error) {
@@ -132,7 +118,7 @@ const getLugar = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         const { id } = req.params;
         const lugar = yield lugar_entity_1.Lugar.findOneBy({ id: parseInt(id) });
         if (!lugar)
-            return res.status(404).json({ message: "Lugar not found" });
+            return res.status(404).json({ message: "Lugar no encontrado" });
         return res.json(lugar);
     }
     catch (error) {
@@ -145,16 +131,17 @@ exports.getLugar = getLugar;
 const updateLugar = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { id } = req.params;
+        const file = req.file;
         const lugar = yield lugar_entity_1.Lugar.findOneBy({ id: parseInt(id) });
         if (!lugar)
-            return res.status(404).json({ message: "Lugar not found" });
+            return res.status(404).json({ message: "Lugar no encontrado" });
         // Actualizar los datos del lugar según el cuerpo de la solicitud
         const { nombre, latitud, longitud, localidad, regiones, url } = req.body;
         lugar.nombre = nombre;
         lugar.latitud = latitud;
         lugar.longitud = longitud;
         lugar.localidad = localidad;
-        lugar.regiones = regiones;
+        lugar.region = regiones;
         lugar.url = url;
         // No es necesario actualizar los recorridos ya que no estamos creando nuevos recorridos aquí
         yield lugar.save();
@@ -170,9 +157,11 @@ exports.updateLugar = updateLugar;
 const deleteLugar = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { id } = req.params;
-        const result = yield lugar_entity_1.Lugar.delete(id);
-        if (result.affected === 0)
-            return res.status(404).json({ message: "Lugar not found" });
+        const lugar = yield lugar_entity_1.Lugar.findOneBy({ id: parseInt(id) });
+        if (!lugar) {
+            return res.status(404).json({ message: "Lugar no encontrado" });
+        }
+        yield lugar_entity_1.Lugar.delete(id);
         return res.sendStatus(204);
     }
     catch (error) {

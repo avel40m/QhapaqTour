@@ -58,6 +58,7 @@ const refresh = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
 });
 exports.refresh = refresh;
 const comparePassword = (usuario, password) => __awaiter(void 0, void 0, void 0, function* () {
+    console.log(usuario);
     return yield bcrypt_1.default.compare(password, usuario.password);
 });
 const createHash = (password) => __awaiter(void 0, void 0, void 0, function* () {
@@ -111,7 +112,7 @@ const signIn = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
             });
         }
         const usuarioEncontrado = yield usuario_entity_1.Usuario.createQueryBuilder('usuario')
-            .where('usuario.email = :email or usuario.username = :email2', { email: email, email2: email })
+            .where('usuario.email = :email or usuario.username = :username', { email: email, username: email })
             .getOne();
         if (!usuarioEncontrado) {
             return res.status(400).json({
@@ -124,9 +125,13 @@ const signIn = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
                 message: 'Credenciales incorrectas.'
             });
         }
-        return res.status(201).cookie("credentials", createToken(usuarioEncontrado)).json({
+        const { id, username, rol } = usuarioEncontrado;
+        const user = { id, username, rol };
+        const token = createToken(usuarioEncontrado);
+        return res.status(201).cookie("credentials", token).json({
             message: "Usuario logueado correctamente",
-            token: createToken(usuarioEncontrado)
+            user,
+            token
         });
     }
     catch (error) {

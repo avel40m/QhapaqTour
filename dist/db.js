@@ -11,11 +11,11 @@ const lugar_entity_1 = require("./entities/lugar.entity");
 const pago_entity_1 = require("./entities/pago.entity");
 const recorrido_entity_1 = require("./entities/recorrido.entity");
 exports.AppDataSource = new typeorm_1.DataSource({
-    type: 'mysql',
-    port: 3307,
-    username: 'root',
+    type: 'postgres',
+    port: 5432,
+    username: 'admin',
     password: 'root',
     database: 'QhapaqTour',
-    // synchronize: true,
+    synchronize: true,
     entities: [usuario_entity_1.Usuario, guia_entity_1.Guia, vehiculo_entity_1.Vehiculo, reservas_entity_1.Reservas, calificacion_entity_1.Calificacion, recorrido_entity_1.Recorrido, lugar_entity_1.Lugar, pago_entity_1.Pago]
 });

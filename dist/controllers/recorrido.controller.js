@@ -21,22 +21,27 @@ const getRecorridos = (req, res) => __awaiter(void 0, void 0, void 0, function* 
             .leftJoinAndSelect("guia.usuario", "usuario")
             .leftJoinAndSelect("recorrido.lugar", "lugar")
             .leftJoinAndSelect("recorrido.calificaciones", "calificaciones")
-            .getOne();
-        const clasificacionArreglo = [];
-        recorridos === null || recorridos === void 0 ? void 0 : recorridos.calificaciones.forEach(calisificacion => {
-            clasificacionArreglo.push(calisificacion);
+            .getMany();
+        const arregloRecorridoClasificacionDTO = [];
+        recorridos.forEach(recorrido => {
+            const recorridoCalificacionDTO = new recorrido_dto_1.RecorridoCalificacionDTO;
+            const clasificacionArreglo = [];
+            recorrido.calificaciones.forEach(calisificacion => {
+                clasificacionArreglo.push(calisificacion);
+            });
+            recorridoCalificacionDTO.idRecorrido = recorrido.id;
+            recorridoCalificacionDTO.username = recorrido === null || recorrido === void 0 ? void 0 : recorrido.guia.usuario.username;
+            recorridoCalificacionDTO.nombre = recorrido === null || recorrido === void 0 ? void 0 : recorrido.guia.usuario.nombre;
+            recorridoCalificacionDTO.apellido = recorrido === null || recorrido === void 0 ? void 0 : recorrido.guia.usuario.apellido;
+            recorridoCalificacionDTO.precio = recorrido === null || recorrido === void 0 ? void 0 : recorrido.precio;
+            recorridoCalificacionDTO.duracion = recorrido === null || recorrido === void 0 ? void 0 : recorrido.duracion;
+            recorridoCalificacionDTO.createdAt = String(recorrido === null || recorrido === void 0 ? void 0 : recorrido.createdAt);
+            recorridoCalificacionDTO.cantidadPersonas = recorrido === null || recorrido === void 0 ? void 0 : recorrido.cantidadPersonas;
+            recorridoCalificacionDTO.lugar = recorrido === null || recorrido === void 0 ? void 0 : recorrido.lugar;
+            recorridoCalificacionDTO.calificaciones = clasificacionArreglo;
+            arregloRecorridoClasificacionDTO.push(recorridoCalificacionDTO);
         });
-        const recorridoCalificacionDTO = new recorrido_dto_1.RecorridoCalificacionDTO;
-        recorridoCalificacionDTO.username = recorridos === null || recorridos === void 0 ? void 0 : recorridos.guia.usuario.username;
-        recorridoCalificacionDTO.nombre = recorridos === null || recorridos === void 0 ? void 0 : recorridos.guia.usuario.nombre;
-        recorridoCalificacionDTO.apellido = recorridos === null || recorridos === void 0 ? void 0 : recorridos.guia.usuario.apellido;
-        recorridoCalificacionDTO.precio = recorridos === null || recorridos === void 0 ? void 0 : recorridos.precio;
-        recorridoCalificacionDTO.duracion = recorridos === null || recorridos === void 0 ? void 0 : recorridos.duracion;
-        recorridoCalificacionDTO.createdAt = String(recorridos === null || recorridos === void 0 ? void 0 : recorridos.createdAt);
-        recorridoCalificacionDTO.cantidadPersonas = recorridos === null || recorridos === void 0 ? void 0 : recorridos.cantidadPersonas;
-        recorridoCalificacionDTO.lugar = recorridos === null || recorridos === void 0 ? void 0 : recorridos.lugar;
-        recorridoCalificacionDTO.calificaciones = clasificacionArreglo;
-        return res.status(200).json(recorridoCalificacionDTO);
+        return res.status(200).json(arregloRecorridoClasificacionDTO);
     }
     catch (error) {
         if (error instanceof Error) {

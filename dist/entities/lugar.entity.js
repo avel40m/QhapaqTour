@@ -11,7 +11,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Lugar = void 0;
 const typeorm_1 = require("typeorm");
-const regiones_enum_1 = require("../utils/regiones.enum");
+const region_enum_1 = require("../utils/region.enum");
 const recorrido_entity_1 = require("./recorrido.entity");
 let Lugar = exports.Lugar = class Lugar extends typeorm_1.BaseEntity {
 };
@@ -38,14 +38,18 @@ __decorate([
 __decorate([
     (0, typeorm_1.Column)({
         type: 'enum',
-        enum: regiones_enum_1.REGIONES
+        enum: region_enum_1.REGION
     }),
     __metadata("design:type", String)
-], Lugar.prototype, "regiones", void 0);
+], Lugar.prototype, "region", void 0);
 __decorate([
     (0, typeorm_1.Column)(),
     __metadata("design:type", String)
 ], Lugar.prototype, "url", void 0);
+__decorate([
+    (0, typeorm_1.Column)(),
+    __metadata("design:type", String)
+], Lugar.prototype, "publicId", void 0);
 __decorate([
     (0, typeorm_1.CreateDateColumn)(),
     __metadata("design:type", Date)

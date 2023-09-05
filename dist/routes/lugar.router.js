@@ -2,9 +2,8 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = require("express");
 const lugar_controller_1 = require("./../controllers/lugar.controller");
-const upload_multer_1 = require("../middlewares/upload.multer");
 const router = (0, express_1.Router)();
-router.post('/lugares', upload_multer_1.uploadMiddleware, lugar_controller_1.createLugar);
+router.post('/lugares', lugar_controller_1.createLugar);
 router.get('/lugares', lugar_controller_1.getLugares);
 router.get('/lugares/:id', lugar_controller_1.getLugar);
 router.get('/imagen/:idImage/lugares', lugar_controller_1.getImages);
