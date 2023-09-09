@@ -104,7 +104,16 @@ export const getUsuario = async (req: TypedRequest<{ id: string }, {}>, res: Res
                 message: 'Usuario no encontrado'
             });
         }
-        return res.status(200).json(usuario);
+        const usuarioDTO = new UsuarioDTO;
+        usuarioDTO.id = usuario.id
+        usuarioDTO.email = usuario.email
+        usuarioDTO.username = usuario.username
+        usuarioDTO.apellido = usuario.apellido
+        usuarioDTO.nombre = usuario.nombre
+        usuarioDTO.dni = usuario.dni
+        usuarioDTO.rol = usuario.rol
+
+        return res.status(200).json(usuarioDTO);
     } catch (error) {
         if (error instanceof Error) {
             return res.status(500).json({
