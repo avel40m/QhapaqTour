@@ -11,10 +11,7 @@ export class Calificacion extends BaseEntity{
     comentario: string;
     
     @Column()
-    fecha: Date;
-    
-    @Column()
-    note: number;
+    nota: number;
     
     @CreateDateColumn()
     createdAt: Date;

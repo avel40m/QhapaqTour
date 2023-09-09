@@ -46,7 +46,8 @@ build/Release
 node_modules/
 jspm_packages/
 
-docker-compose/mysql/data
+docker-compose/mysql/data*
+docker-compose/postgresql/postgres*
 docker/
 # Snowpack dependency directory (https://snowpack.dev/)
 web_modules/

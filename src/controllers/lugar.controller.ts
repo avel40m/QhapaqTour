@@ -1,7 +1,6 @@
 import { Request, Response } from 'express';
 import { Lugar } from './../entities/lugar.entity';
 import { REGION } from './../utils/region.enum';
-import { Recorrido } from '../entities/recorrido.entity';
 import path from 'path';
 
 interface LugarBody {
@@ -9,7 +8,7 @@ interface LugarBody {
   latitud: string;
   longitud: string;
   localidad: string;
-  regiones: REGION;
+  region: REGION;
   url: string;
 }
 
@@ -81,18 +80,18 @@ const regionesYlugares = {
 export const createLugar = async (req: Request, res: Response) => {
     try {
 
-      const { nombre, latitud, longitud, localidad, regiones,url }: LugarBody = req.body;
+      const { nombre, latitud, longitud, localidad, region,url }: LugarBody = req.body;
       const lugar = new Lugar();
       lugar.nombre = nombre;
       lugar.latitud = latitud;
       lugar.longitud = longitud;
       lugar.localidad = localidad;
-      lugar.region = regiones;
+      lugar.region = region;
       lugar.url = url;
       
       await lugar.save();
+
       return res.json(lugar);
-      // return res.json('subida');
     } catch (error) {
       if (error instanceof Error) {
         return res.status(500).json({ message: error.message });
@@ -129,20 +128,18 @@ export const createLugar = async (req: Request, res: Response) => {
 export const updateLugar = async (req: Request, res: Response) => {
     try {
       const { id } = req.params;
-      const file = req.file;
       const lugar = await Lugar.findOneBy({ id: parseInt(id) });
   
       if (!lugar) return res.status(404).json({ message: "Lugar no encontrado" });
   
-      // Actualizar los datos del lugar según el cuerpo de la solicitud
-      const { nombre, latitud, longitud, localidad, regiones,url }: LugarBody = req.body;
+      const { nombre, latitud, longitud, localidad, region, url }: LugarBody = req.body;
+      
       lugar.nombre = nombre;
       lugar.latitud = latitud;
       lugar.longitud = longitud;
       lugar.localidad = localidad;
-      lugar.region = regiones;
-      lugar.url = url;  
-      // No es necesario actualizar los recorridos ya que no estamos creando nuevos recorridos aquí
+      lugar.region = region;
+      lugar.url = url;
   
       await lugar.save();
       return res.sendStatus(204);

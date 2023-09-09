@@ -27,9 +27,6 @@ export class Lugar extends BaseEntity{
     
     @Column()
     url: string;
-
-    @Column()
-    publicId: string;
     
     @CreateDateColumn()
     createdAt: Date;

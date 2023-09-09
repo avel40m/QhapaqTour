@@ -2,6 +2,7 @@ import { Guia } from "../entities/guia.entity";
 import { Vehiculo } from "../entities/vehiculo.entity";
 
 export class UsuarioDTO {
+    id: number;
     email: string;
     username: string;
     apellido:string;

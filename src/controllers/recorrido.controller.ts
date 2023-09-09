@@ -38,7 +38,7 @@ export const getRecorridos = async (req: Request, res: Response) => {
                     clasificacionArreglo.push(calisificacion);
                 })
                
-                recorridoCalificacionDTO.idRecorrido = recorrido.id;
+                recorridoCalificacionDTO.id = recorrido.id;
                 recorridoCalificacionDTO.username = recorrido?.guia.usuario.username as string;
                 recorridoCalificacionDTO.nombre = recorrido?.guia.usuario.nombre as string;
                 recorridoCalificacionDTO.apellido = recorrido?.guia.usuario.apellido as string;
