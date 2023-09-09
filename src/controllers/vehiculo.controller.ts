@@ -2,6 +2,7 @@ import { Request, Response } from 'express';
 import { Vehiculo } from './../entities/vehiculo.entity'; // Ajusta la ruta hacia tu entidad Vehiculo
 import { TIPO_VEHICULOS } from './../utils/vehiculos.enum'; // Ajusta la ruta hacia tu enum
 import { Guia } from './../entities/guia.entity'; //guia
+import { Usuario } from '../entities/usuario.entity';
 
 interface VehiculoBody {
   asientos: number;
@@ -13,7 +14,8 @@ interface VehiculoBody {
 //el metodo para crear el vehiculo
 export const createVehiculo = async (req: Request, res: Response) => {
   try {
-    const { asientos, tipo, guiaId }: VehiculoBody = req.body;
+    const { asientos, tipo }: VehiculoBody = req.body;
+    const guiaId = req.idUser;
 
     const vehiculo = new Vehiculo();
     vehiculo.asientos = asientos;
@@ -72,31 +74,11 @@ export const getVehiculo = async (req: Request, res: Response) => {
 
 //modifica los datos de vehiculo con el id
 export const updateVehiculo = async (req: Request, res: Response) => {
-    const { id } = req.params;
+    const guiaId = req.idUser;
   
     try {
-
-//      const vehiculo = await Vehiculo.findOne(id, { relations: ["guia"] });
-//      const vehiculo = await Vehiculo.findOne({ where: { id }, relations: ["guia"] });
-      const vehiculo = await Vehiculo.findOne({ where: { id: Number(id) }, relations: ["guia"] });
-
-
-      if (!vehiculo) return res.status(404).json({ message: "Vehiculo not found" });
-  
-      const { asientos, tipo, guiaId }: VehiculoBody = req.body;
-  
-      vehiculo.asientos = asientos;
-      vehiculo.tipo = tipo;
-  
-//      const guia = await Guia.findOne(guiaId);
-      const guia = await Guia.findOne({ where: { id: guiaId } });
-
-      if (!guia) return res.status(404).json({ message: "Guia not found" });
-  
-      vehiculo.guia = guia;
-  
-      await vehiculo.save();
-  
+      const usuario = await Usuario.findOne({where: {id: Number(guiaId)}});
+      // await Vehiculo.update({id: usuario.id},req.body);
       return res.sendStatus(204);
     } catch (error) {
       if (error instanceof Error) {
@@ -131,3 +113,27 @@ export const deleteVehiculo = async (req: Request, res: Response) => {
   }
 };
 /**pedir ayuda por el tema de guia */
+
+export const createVehiculoForGuia = async (req:Request,res:Response) => {
+  const usuarioId = req.idUser;
+  try {
+    const usuario = await Usuario.findOne({where: {id: usuarioId},relations: ['guia']});
+    if (usuario?.guia == null) {
+      return res.status(404).json({message:"Primero complete su dato de guia"})
+    }
+    const guia = await Guia.findOne({where: {id: usuario.guia.id},relations: ['vehiculos']})
+    const vehiculo = new Vehiculo();
+    vehiculo.asientos = req.body.asientos;
+    vehiculo.tipo = req.body.tipo;
+    await vehiculo.save();
+    
+    guia?.vehiculos.push(vehiculo);
+    await guia?.save();
+
+    return res.status(201).json({message:"Se guardo el vehiculo correctamente"})
+  } catch (error) {
+    if (error instanceof Error) {
+      return res.status(500).json({ message: error.message });
+    }
+  }
+}

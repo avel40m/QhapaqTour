@@ -1,6 +1,7 @@
 import { Router } from 'express';
 import { 
    deleteUsuario, 
+   getUserGuiaVehicle, 
    getUsuario, 
    getUsuarios, 
    refresh, 
@@ -9,9 +10,11 @@ import {
    updateUsuario
 } from '../controllers/usuario.controller';
 import passport from 'passport';
+import { validateTokenGuia } from '../middlewares/validate.token';
 
 const router = Router();
 
+router.get('/usuarios/guia', validateTokenGuia, getUserGuiaVehicle);
 router.get('/usuarios', passport.authenticate('jwt', { session: false }), getUsuarios);
 router.get('/usuarios/:id', passport.authenticate('jwt', { session: false }), getUsuario);
 router.post('/signin', signIn);

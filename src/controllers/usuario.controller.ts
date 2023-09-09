@@ -5,7 +5,8 @@ import jwt from 'jsonwebtoken'
 import { Usuario } from '../entities/usuario.entity'
 import { ROL } from '../utils/rol.enum';
 import { Guia } from '../entities/guia.entity';
-import { UsuarioDTO } from '../dto/usuario.dto';
+import { UsuarioDTO, UsuarioGuiaDTO } from '../dto/usuario.dto';
+import { Vehiculo } from '../entities/vehiculo.entity';
 
 const jwtSecret = 'somesecrettoken'
 const jwtRefreshTokenSecret = 'somesecrettokenrefresh'
@@ -70,7 +71,6 @@ export const refresh = async (req: Request, res: Response) => {
 }
 
 const comparePassword = async (usuario: Usuario, password: string): Promise<Boolean> => {
-    console.log(usuario)
     return await bcrypt.compare(password, usuario.password)
 }
 
@@ -141,9 +141,9 @@ export const signIn = async (req: TypedRequest<{}, UserBody>, res: Response) => 
             });
         }
 
-        const { id, username, rol } = usuarioEncontrado;
+        const { id, username, rol, apellido,nombre } = usuarioEncontrado;
 
-        const user = { id, username, rol };
+        const user = { id, username, rol, apellido, nombre };
         const token = createToken(usuarioEncontrado);
         
         return res.status(201).cookie("credentials", token).json({
@@ -257,6 +257,31 @@ export const deleteUsuario = async (req: TypedRequest<{ id: string }, {}>, res: 
         }
 
         return res.sendStatus(204);
+    } catch (error) {
+        if (error instanceof Error) {      
+            return res.status(500).json({
+              message: error.message
+            });
+        }
+    }
+}
+
+export const getUserGuiaVehicle = async (req:Request,res:Response) => {
+    const usuarioId = req.idUser;
+    try {
+        const usuario =  await Usuario.findOne({where: {id: parseInt(usuarioId)},relations: ['guia','guia.vehiculos']});
+        const usuarioDTO = new UsuarioGuiaDTO();
+        usuarioDTO.nombre = usuario?.nombre as string;
+        usuarioDTO.apellido = usuario?.apellido as string;
+        usuarioDTO.email = usuario?.email as string;
+        usuarioDTO.dni = usuario?.dni as string;
+        usuarioDTO.guia = usuario?.guia as Guia; 
+        const vehiculos: Vehiculo[] = [];
+        usuario?.guia.vehiculos.forEach(vehiculo => {
+            vehiculos.push(vehiculo);
+        })
+        usuarioDTO.vehiculos = vehiculos;
+        res.status(200).json(usuarioDTO);
     } catch (error) {
         if (error instanceof Error) {      
             return res.status(500).json({

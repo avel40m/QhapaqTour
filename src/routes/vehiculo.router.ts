@@ -1,16 +1,16 @@
 import { Router } from 'express';
-import { 
-   createVehiculo, 
-   getVehiculos, 
-   getVehiculo, 
-   updateVehiculo,
-   deleteVehiculo 
-} from './../controllers/vehiculo.controller';
 import { validateTokenGuia } from '../middlewares/validate.token';
+import {
+   createVehiculoForGuia,
+   deleteVehiculo,
+   getVehiculo,
+   getVehiculos,
+   updateVehiculo
+} from './../controllers/vehiculo.controller';
 
 const router = Router();
 
-router.post('/vehiculos', validateTokenGuia ,createVehiculo);
+router.post('/vehiculos', validateTokenGuia ,createVehiculoForGuia);
 router.get('/vehiculos', getVehiculos);
 router.get('/vehiculos/:id',validateTokenGuia ,getVehiculo);
 router.put('/vehiculos/:id',validateTokenGuia ,updateVehiculo);

@@ -59,7 +59,8 @@ export const getGuia = async (req: TypedRequest<{ id: string }, {}>, res: Respon
 }
 
 export const createGuia = async (req: TypedRequest<{}, GuiaBody>, res: Response) => {
-    const { usuarioId, carnet, licencia, cedula } = req.body;
+    const { carnet, licencia, cedula } = req.body;
+    const usuarioId = req.idUser;
     try {
         const usuario = await Usuario.findOneBy({ id: usuarioId });
         if (!usuario) {
@@ -102,20 +103,13 @@ export const createGuia = async (req: TypedRequest<{}, GuiaBody>, res: Response)
     }
 }
 
-export const updateGuia = async (req: TypedRequest<{ id: string }, GuiaBody>, res: Response) => {
-    const { id } = req.params;
+export const updateGuia = async (req:Request, res: Response) => {
     const body = req.body;
-
+    const usuario = req.idUser;
     try {
-        const guia = await Guia.findOneBy({ id: parseInt(id) });
-        if (!guia) {
-            return res.status(404).json({
-                message: 'Guia no encontrado'
-            });
-        }
-
-        await Guia.update({ id: parseInt(id) }, body);
-
+        const user = await Usuario.findOne({where: {id: usuario,},relations: ['guia']})
+         
+        await Guia.update({id: user?.guia.id},body);
         return res.sendStatus(204);
     } catch (error) {
         if (error instanceof Error) {
@@ -124,4 +118,22 @@ export const updateGuia = async (req: TypedRequest<{ id: string }, GuiaBody>, re
             });
         }
     }
+}
+
+export const createOrUpdateGuide = async (req:Request,res:Response) => {
+    const usuarioId = req.idUser;
+    try {
+        const usuario = await Usuario.findOne({where: {id: usuarioId,},relations: ['guia']})
+        
+        if (usuario?.guia == null) {
+            createGuia(req,res)
+        } else {            
+            updateGuia(req,res);
+        }
+    } catch (error) {
+        if (error instanceof Error) {
+            return res.status(500).json({
+                message: error.message
+            });
+        }    }
 }
