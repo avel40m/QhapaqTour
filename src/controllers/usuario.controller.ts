@@ -70,7 +70,6 @@ export const refresh = async (req: Request, res: Response) => {
 }
 
 const comparePassword = async (usuario: Usuario, password: string): Promise<Boolean> => {
-    console.log(usuario)
     return await bcrypt.compare(password, usuario.password)
 }
 

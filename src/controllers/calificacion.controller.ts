@@ -2,12 +2,12 @@ import { Request, Response } from "express";
 import { Usuario } from "../entities/usuario.entity";
 import { Calificacion } from "../entities/calificacion.entity";
 import { Recorrido } from "../entities/recorrido.entity";
-import { ClasificacionDTO } from "../dto/clasificacion.dto";
+import { CalificacionDTO } from "../dto/calificacion.dto";
 
 export const createCalificacion = async (req: Request, res: Response) => {
     const { id } = req.params;
     try {
-        const { note, comentario } = req.body;
+        const { nota, comentario } = req.body;
         const recorrido = await Recorrido.findOneOrFail({ where: { id: Number(id) } });
         if (!recorrido)
             return res.status(404).json({ message: "No se encontro el recorrido" });
@@ -15,13 +15,12 @@ export const createCalificacion = async (req: Request, res: Response) => {
         if (!usuario)
             return res.status(404).json({ message: "Usuario no encontrado" });
         const calificacion = Calificacion.create();
-        calificacion.note = note;
+        calificacion.nota = nota;
         calificacion.comentario = comentario;
-        calificacion.fecha = new Date(Date.now());
         calificacion.usuario = usuario;
         calificacion.recorrido = recorrido;
         await calificacion.save();
-        res.status(200).json({ message: "calificacion guardado" });
+        res.status(200).json({ message: "calificacion guardada" });
     } catch (error) {
         if (error instanceof Error) {
             res.status(500).json({ message: error.message })
@@ -54,28 +53,28 @@ export const deleteCalificacion = async (req: Request, res: Response) => {
     }
 }
 
-export const getClasificacionRecorrido = async (req: Request, res: Response) => {
+export const getCalificacionRecorrido = async (req: Request, res: Response) => {
     try {
         const id = req.params.id;
         const recorrido = await Recorrido.findOneOrFail({ where: { id: Number(id) } });
         if (!recorrido)
             return res.status(404).json({ message: "No se encontro el recorrido" });
-        const calificacion = await Calificacion.createQueryBuilder('clasificacion')
-            .leftJoinAndSelect('clasificacion.usuario', 'usuario')
-            .where('clasificacion.recorridoId = :usuario', { usuario: id })
+        const calificaciones = await Calificacion.createQueryBuilder('calificacion')
+            .leftJoinAndSelect('calificacion.usuario', 'usuario')
+            .where('calificacion.recorridoId = :usuario', { usuario: id })
             .getMany();
-        const arregloClasificacion: ClasificacionDTO[] = [];
-        calificacion.forEach(calificar => {
-            const clasificacionDTO = new ClasificacionDTO;
-            clasificacionDTO.id = calificar.id;
-            clasificacionDTO.nombre = calificar.usuario.nombre;
-            clasificacionDTO.apellido = calificar.usuario.apellido;
-            clasificacionDTO.note = calificar.note;
-            clasificacionDTO.comentario = calificar.comentario;
-            clasificacionDTO.fecha = calificar.fecha;
-            arregloClasificacion.push(clasificacionDTO)
+        const arregloCalificacion: CalificacionDTO[] = [];
+        calificaciones.forEach(calificacion => {
+            const calificacionDTO = new CalificacionDTO;
+            calificacionDTO.id = calificacion.id;
+            calificacionDTO.nombre = calificacion.usuario.nombre;
+            calificacionDTO.apellido = calificacion.usuario.apellido;
+            calificacionDTO.nota = calificacion.nota;
+            calificacionDTO.comentario = calificacion.comentario;
+            calificacionDTO.fecha = calificacion.createdAt;
+            arregloCalificacion.push(calificacionDTO)
         })
-        return res.status(200).json(arregloClasificacion)
+        return res.status(200).json(arregloCalificacion)
     } catch (error) {
         if (error instanceof Error)
             return res.status(500).json({ message: error.message });

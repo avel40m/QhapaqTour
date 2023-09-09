@@ -1,8 +1,8 @@
-export class ClasificacionDTO {
+export class CalificacionDTO {
     id: number;
     nombre: string;
     apellido: string;
-    note: number;
+    nota: number;
     comentario: string;
     fecha: Date;
 }
