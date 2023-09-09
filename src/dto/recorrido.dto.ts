@@ -16,7 +16,7 @@ export class RecorridoDTO {
 }
 
 export class RecorridoCalificacionDTO {
-    idRecorrido: number;
+    id: number;
     username: string;
     nombre: string;
     apellido: string;
