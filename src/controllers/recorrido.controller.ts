@@ -87,15 +87,15 @@ export const getRecorrido = async (req: TypedRequest<{ id: string }, {}>, res: R
 }
 
 export const createRecorrido = async (req: TypedRequest<{}, RecorridoBody>, res: Response) => {
-    const { precio, duracion, cantidadPersonas, guia, lugar } = req.body;
+    const { precio, duracion, cantidadPersonas, lugar } = req.body;
+    const usuarioId = req.idUser;
     try {
-        if (!precio || !duracion || !guia || !lugar) {
-            return res.status(400).json({
-                message: 'El precio, la duración, el guía y lugar son requeridos.'
-            });
-        }
+        const usuario = await Usuario.findOne({where: {id: parseInt(usuarioId)},relations: ['guia']});
+        
+        if(!usuario)
+            return res.status(404).json({message:"Usuario no encontrado"});
 
-        const guiaEncontrado = await Guia.findOneBy({ id: guia })
+        const guiaEncontrado = await Guia.findOneBy({ id: usuario.guia.id })
         if (!guiaEncontrado) {
             return res.status(404).json({
                 message: 'Guía no encontrado'
