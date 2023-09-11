@@ -6,3 +6,12 @@ export class CalificacionDTO {
     comentario: string;
     fecha: Date;
 }
+
+export class CalificacionGuiaDTO {
+    lugar: string;
+    nombre: string;
+    apellido: string;
+    nota: number;
+    comentario: string;
+    fecha: string;    
+}

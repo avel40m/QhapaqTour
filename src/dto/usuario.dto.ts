@@ -16,6 +16,6 @@ export class UsuarioGuiaDTO {
     apellido: string;
     email: string;
     dni: string;
-    guia: Guia;
+    guia: Guia | null;
     vehiculos: Vehiculo[];
 }

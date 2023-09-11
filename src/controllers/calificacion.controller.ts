@@ -2,7 +2,7 @@ import { Request, Response } from "express";
 import { Usuario } from "../entities/usuario.entity";
 import { Calificacion } from "../entities/calificacion.entity";
 import { Recorrido } from "../entities/recorrido.entity";
-import { CalificacionDTO } from "../dto/calificacion.dto";
+import { CalificacionDTO, CalificacionGuiaDTO } from "../dto/calificacion.dto";
 
 export const createCalificacion = async (req: Request, res: Response) => {
     const { id } = req.params;
@@ -78,5 +78,40 @@ export const getCalificacionRecorrido = async (req: Request, res: Response) => {
     } catch (error) {
         if (error instanceof Error)
             return res.status(500).json({ message: error.message });
+    }
+}
+
+export const getCalificacionGuia = async (req: Request, res: Response) => {
+    const usuarioId = req.idUser;
+    try {
+        const usuario = await Usuario.findOne({ where: { id: Number(usuarioId) }, relations: ['guia'] });
+        if (!usuario)
+            return res.status(404).json({ message: "Usuario no encontrado" });
+        if (usuario.guia == null)
+            return res.status(404).json({ message: "Complete los datos dl guia" });
+
+        const calificaciones = await Calificacion
+        .createQueryBuilder("calificacion")
+        .leftJoinAndSelect("calificacion.recorrido","recorrido")
+        .leftJoinAndSelect("calificacion.usuario","usuario")
+        .leftJoinAndSelect("recorrido.lugar","lugar")
+        .where("recorrido.guiaId = :id",{id: usuario.guia.id})
+        .getMany();
+        const arregloCalificacion: CalificacionGuiaDTO[] = [];
+        calificaciones.map(calificacion => {
+            const calisificacionDTO = new CalificacionGuiaDTO();
+            calisificacionDTO.lugar = calificacion.recorrido.lugar.nombre;
+            calisificacionDTO.nombre = calificacion.usuario.nombre;
+            calisificacionDTO.apellido = calificacion.usuario.apellido;
+            calisificacionDTO.nota = calificacion.nota;
+            calisificacionDTO.comentario = calificacion.comentario;
+            calisificacionDTO.fecha = new Intl.DateTimeFormat('es',{dateStyle: 'full'}).format(calificacion.createdAt);
+            arregloCalificacion.push(calisificacionDTO);
+        })
+        res.status(200).json(arregloCalificacion);
+    } catch (error) {
+        if (error instanceof Error)
+            return res.status(500).json({ message: error.message });
+
     }
 }

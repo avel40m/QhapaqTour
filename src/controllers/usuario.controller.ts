@@ -34,7 +34,7 @@ interface TypedRequest<U extends ParamsDictionary, T> extends Request {
 const createToken = (usuario: Usuario) => {
     const token = jwt.sign({ id: usuario.id, email: usuario.email, rol: usuario.rol }, jwtSecret, { expiresIn: '30m' });
     const refreshToken = jwt.sign({ email: usuario.email, rol: usuario.rol }, jwtRefreshTokenSecret, { expiresIn: '90d' });
-    
+
     refreshTokens.push(refreshToken);
     return {
         token,
@@ -54,8 +54,8 @@ export const refresh = async (req: Request, res: Response) => {
 
     try {
         const usuario = jwt.verify(refreshToken, jwtRefreshTokenSecret)
-        const { email } = <any> usuario
-        const usuarioEncontrado = <Usuario> await Usuario.findOneBy({ email })
+        const { email } = <any>usuario
+        const usuarioEncontrado = <Usuario>await Usuario.findOneBy({ email })
         if (!usuarioEncontrado) return res.status(400).json({
             message: 'El usuario no existe'
         })
@@ -81,7 +81,7 @@ const createHash = async (password: string): Promise<string> => {
 
 export const getUsuarios = async (req: Request, res: Response) => {
     try {
-        const usuarios = await Usuario.find({ 
+        const usuarios = await Usuario.find({
             relations: {
                 guia: true
             }
@@ -90,7 +90,7 @@ export const getUsuarios = async (req: Request, res: Response) => {
     } catch (error) {
         if (error instanceof Error) {
             return res.status(500).json({
-              message: error.message
+                message: error.message
             });
         }
     }
@@ -118,7 +118,7 @@ export const getUsuario = async (req: TypedRequest<{ id: string }, {}>, res: Res
     } catch (error) {
         if (error instanceof Error) {
             return res.status(500).json({
-              message: error.message
+                message: error.message
             });
         }
     }
@@ -134,8 +134,8 @@ export const signIn = async (req: TypedRequest<{}, UserBody>, res: Response) => 
         }
 
         const usuarioEncontrado = await Usuario.createQueryBuilder('usuario')
-        .where('usuario.email = :email or usuario.username = :username', { email: email, username: email})
-        .getOne();
+            .where('usuario.email = :email or usuario.username = :username', { email: email, username: email })
+            .getOne();
 
         if (!usuarioEncontrado) {
             return res.status(400).json({
@@ -150,21 +150,21 @@ export const signIn = async (req: TypedRequest<{}, UserBody>, res: Response) => 
             });
         }
 
-        const { id, username, rol, apellido,nombre } = usuarioEncontrado;
+        const { id, username, rol, apellido, nombre } = usuarioEncontrado;
 
         const user = { id, username, rol, apellido, nombre };
         const token = createToken(usuarioEncontrado);
-        
+
         return res.status(201).cookie("credentials", token).json({
             message: "Usuario logueado correctamente",
             user,
             token
         });
-    
+
     } catch (error) {
         if (error instanceof Error) {
             return res.status(500).json({
-              message: error.message
+                message: error.message
             });
         }
     }
@@ -213,9 +213,9 @@ export const signUp = async (req: TypedRequest<{}, UserBody>, res: Response) => 
                     message: 'El rol solo puede tomar los valores ADMIN, CLIENTE o GUIA.'
                 });
             }
-      
+
             return res.status(500).json({
-              message: error.message
+                message: error.message
             });
         }
     }
@@ -246,9 +246,9 @@ export const updateUsuario = async (req: TypedRequest<{ id: string }, UserBody>,
                     message: 'El rol solo puede tomar los valores ADMIN, CLIENTE o GUIA.'
                 });
             }
-      
+
             return res.status(500).json({
-              message: error.message
+                message: error.message
             });
         }
     }
@@ -267,24 +267,33 @@ export const deleteUsuario = async (req: TypedRequest<{ id: string }, {}>, res: 
 
         return res.sendStatus(204);
     } catch (error) {
-        if (error instanceof Error) {      
+        if (error instanceof Error) {
             return res.status(500).json({
-              message: error.message
+                message: error.message
             });
         }
     }
 }
 
-export const getUserGuiaVehicle = async (req:Request,res:Response) => {
+export const getUserGuiaVehicle = async (req: Request, res: Response) => {
     const usuarioId = req.idUser;
     try {
-        const usuario =  await Usuario.findOne({where: {id: parseInt(usuarioId)},relations: ['guia','guia.vehiculos']});
+        const usuario = await Usuario.findOne({ where: { id: parseInt(usuarioId) }, relations: ['guia', 'guia.vehiculos'] });
         const usuarioDTO = new UsuarioGuiaDTO();
+        if (usuario?.guia == null) {
+            usuarioDTO.nombre = usuario?.nombre as string;
+            usuarioDTO.apellido = usuario?.apellido as string;
+            usuarioDTO.email = usuario?.email as string;
+            usuarioDTO.dni = usuario?.dni as string;
+            usuarioDTO.guia = null
+            usuarioDTO.vehiculos = []
+            return res.status(200).json(usuarioDTO);
+        }
         usuarioDTO.nombre = usuario?.nombre as string;
         usuarioDTO.apellido = usuario?.apellido as string;
         usuarioDTO.email = usuario?.email as string;
         usuarioDTO.dni = usuario?.dni as string;
-        usuarioDTO.guia = usuario?.guia as Guia; 
+        usuarioDTO.guia = usuario?.guia as Guia;
         const vehiculos: Vehiculo[] = [];
         usuario?.guia.vehiculos.forEach(vehiculo => {
             vehiculos.push(vehiculo);
@@ -292,9 +301,9 @@ export const getUserGuiaVehicle = async (req:Request,res:Response) => {
         usuarioDTO.vehiculos = vehiculos;
         res.status(200).json(usuarioDTO);
     } catch (error) {
-        if (error instanceof Error) {      
+        if (error instanceof Error) {
             return res.status(500).json({
-              message: error.message
+                message: error.message
             });
         }
     }
