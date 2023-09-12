@@ -5,6 +5,7 @@ import { Usuario } from '../entities/usuario.entity';
 import { Recorrido } from '../entities/recorrido.entity';
 import { RecorridoDTO } from '../dto/recorrido.dto';
 import { Pago } from '../entities/pago.entity';
+import { reservasDTO } from '../dto/reservas.dto';
 
 interface ReservaBody {
     clienteId: number;
@@ -201,5 +202,44 @@ export const generatePago = async (req:Request,res:Response) => {
               message: error.message
             });
         }
+    }
+}
+
+export const getReservasGuias = async (req:Request,res:Response) => {
+    const usuarioId = req.idUser;
+    try {
+        const usuario = await Usuario.findOne({where: {id: usuarioId},relations: ['guia']});
+        if (!usuario)
+            return res.status(404).json({message:'Usuario no encontrado'});
+        if (usuario.guia == null)
+            return res.status(404).json({message:"No es un usuario guia"})
+        const reservas = await Reservas
+        .createQueryBuilder('reservas')
+        .leftJoinAndSelect('reservas.recorrido','recorrido')
+        .leftJoinAndSelect('reservas.usuario','usuario')
+        .leftJoinAndSelect('reservas.pago','pago')
+        .leftJoinAndSelect('recorrido.lugar','lugar')
+        .where('recorrido.guiaId = :id',{id: usuario.guia.id})
+        .getMany();
+        const arregloReservas: reservasDTO[] = [];
+        reservas.map(reserva => {
+            const reservaDTO = new reservasDTO();
+            reservaDTO.apellido = reserva.usuario.apellido;
+            reservaDTO.nombre = reserva.usuario.nombre;
+            reservaDTO.cantidad = reserva.cantidadPersonas;
+            reservaDTO.precio = reserva.precio;
+            reservaDTO.fecha = new Intl.DateTimeFormat('es',{dateStyle: 'medium'}).format(reserva.fechaHora);;
+            reservaDTO.lugar = reserva.recorrido.lugar.nombre;
+            reservaDTO.region = reserva.recorrido.lugar.region;
+            reservaDTO.pago = reserva.pago == null ? 'Pago no efectuado' : 'Pago efectuado';
+            arregloReservas.push(reservaDTO)
+        })
+        res.status(200).json(arregloReservas);
+    } catch (error) {
+        if (error instanceof Error) {      
+            return res.status(500).json({
+              message: error.message
+            });
+        }        
     }
 }
