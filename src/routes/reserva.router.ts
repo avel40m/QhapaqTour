@@ -12,3 +12,7 @@ router.post("/reservas/:idreservas/pago", validateTokenCliente, generatePago);
 router.get('/guia/reservas',validateTokenGuia,getReservasGuias);
 
 export default router;
+
+
+// /clientes/:id/reservas
+// /guias/:id/reservas
