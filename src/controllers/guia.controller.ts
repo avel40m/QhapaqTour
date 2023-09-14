@@ -85,14 +85,15 @@ export const createGuia = async (req: TypedRequest<{}, GuiaBody>, res: Response)
         await usuario.save();
 
         const guiaDTO = new GuiaDTO;
-        email: usuario.email;
-        username: usuario.username; 
-        apellido: usuario.apellido;
-        nombre: usuario.nombre;
-        dni: usuario.dni;
-        carnet: usuario.guia.carnet;
-        licencia: usuario.guia.licencia;
-        cedula: usuario.guia.cedula;
+        guiaDTO.email = usuario.email;
+        guiaDTO.username = usuario.username; 
+        guiaDTO.apellido = usuario.apellido;
+        guiaDTO.nombre = usuario.nombre;
+        guiaDTO.dni = usuario.dni;
+        guiaDTO.carnet = usuario.guia.carnet;
+        guiaDTO.licencia = usuario.guia.licencia;
+        guiaDTO.cedula = usuario.guia.cedula;
+        
         return res.status(201).json(guiaDTO);
     } catch (error) {
         if (error instanceof Error) {

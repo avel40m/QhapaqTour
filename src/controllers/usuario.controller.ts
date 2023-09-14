@@ -134,6 +134,7 @@ export const signIn = async (req: TypedRequest<{}, UserBody>, res: Response) => 
         }
 
         const usuarioEncontrado = await Usuario.createQueryBuilder('usuario')
+            .addSelect('usuario.password')
             .where('usuario.email = :email or usuario.username = :username', { email: email, username: email })
             .getOne();
 

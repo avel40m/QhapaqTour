@@ -12,7 +12,7 @@ export const AppDataSource = new DataSource({
     type: 'postgres',
     port: 5432,
     username: 'admin',
-    password: 'root',
+    password: 'admin',
     database: 'QhapaqTour',
     synchronize: true,
     entities: [Usuario,Guia,Vehiculo,Reservas,Calificacion,Recorrido,Lugar,Pago]

@@ -5,7 +5,7 @@ import { Usuario } from '../entities/usuario.entity';
 import { Recorrido } from '../entities/recorrido.entity';
 import { RecorridoDTO } from '../dto/recorrido.dto';
 import { Pago } from '../entities/pago.entity';
-import { reservasDTO } from '../dto/reservas.dto';
+import { reservaClienteDTO, reservasDTO } from '../dto/reservas.dto';
 
 interface ReservaBody {
     clienteId: number;
@@ -29,6 +29,7 @@ export const getReservas = async (req: Request, res: Response) => {
                 recorrido: true
             }
         });
+
         return res.status(200).json(reservas);
     } catch (error) {
         if (error instanceof Error) {
@@ -107,7 +108,7 @@ export const createReserva = async (req: TypedRequest<{}, ReservaBody>, res: Res
 
         const reservaNueva = new Reservas();
         reservaNueva.cantidadPersonas = cantidadPersonas;
-        reservaNueva.precio = recorrido.precio;
+        reservaNueva.precio = recorrido.precio * cantidadPersonas;
         reservaNueva.fechaHora = fecha;
         reservaNueva.usuario = cliente;
         reservaNueva.recorrido = recorrido;
@@ -136,25 +137,26 @@ export const myReservas = async (req:Request,res:Response) => {
         .where("reservas.usuarioId = :id",{id: req.idUser})
         .getMany();
 
-        const arregloRecorrido: RecorridoDTO[] = [];
-        reservas.forEach(reservas => {
-            const recorridoDto = new RecorridoDTO();
+        const arregloReservas: RecorridoDTO[] = [];
+        reservas.forEach(reserva => {
+            const reservaDto = new reservaClienteDTO();
 
-            recorridoDto.id = reservas.id,
-            recorridoDto.cantidadPersonas = reservas.cantidadPersonas,
-            recorridoDto.precio = reservas.precio,
-            recorridoDto.pago = reservas.pago !== null ? "Pagado" : "No pagado",
-            recorridoDto.duracion = reservas.recorrido.duracion,
-            recorridoDto.nombre_lugar = reservas.recorrido.lugar.nombre,
-            recorridoDto.nombre_localidad = reservas.recorrido.lugar.localidad,
-            recorridoDto.nombre_region = reservas.recorrido.lugar.region,
-            recorridoDto.nombre_guia = reservas.recorrido.guia.usuario.nombre,
-            recorridoDto.apellido_guia = reservas.recorrido.guia.usuario.apellido,
-            recorridoDto.carnet_guia = reservas.recorrido.guia.carnet
-            arregloRecorrido.push(recorridoDto);
-    })
+            reservaDto.id = reserva.id,
+            reservaDto.cantidadPersonas = reserva.cantidadPersonas,
+            reservaDto.precio = reserva.precio,
+            reservaDto.fecha = reserva.fechaHora.toISOString(),
+            reservaDto.pago = reserva.pago !== null ? "Pagado" : "No pagado",
+            reservaDto.duracion = reserva.recorrido.duracion,
+            reservaDto.nombre_lugar = reserva.recorrido.lugar.nombre,
+            reservaDto.nombre_localidad = reserva.recorrido.lugar.localidad,
+            reservaDto.nombre_region = reserva.recorrido.lugar.region,
+            reservaDto.nombre_guia = reserva.recorrido.guia.usuario.nombre,
+            reservaDto.apellido_guia = reserva.recorrido.guia.usuario.apellido,
+            reservaDto.carnet_guia = reserva.recorrido.guia.carnet
+            arregloReservas.push(reservaDto);
+        })
 
-        res.status(200).json(arregloRecorrido);
+        res.status(200).json(arregloReservas);
     } catch (error) {
         if (error instanceof Error) {      
             return res.status(500).json({
@@ -188,7 +190,7 @@ export const generatePago = async (req:Request,res:Response) => {
 
         const pago = Pago.create();
         pago.metodoPago = metodoPago;
-        pago.total = reservas.cantidadPersonas * reservas.precio;
+        pago.total = reservas.precio;
         pago.usuario = usuario;
         await pago.save();
 
@@ -228,7 +230,7 @@ export const getReservasGuias = async (req:Request,res:Response) => {
             reservaDTO.nombre = reserva.usuario.nombre;
             reservaDTO.cantidad = reserva.cantidadPersonas;
             reservaDTO.precio = reserva.precio;
-            reservaDTO.fecha = new Intl.DateTimeFormat('es',{dateStyle: 'medium'}).format(reserva.fechaHora);;
+            reservaDTO.fecha = new Intl.DateTimeFormat('es',{dateStyle: 'medium'}).format(reserva.fechaHora);
             reservaDTO.lugar = reserva.recorrido.lugar.nombre;
             reservaDTO.region = reserva.recorrido.lugar.region;
             reservaDTO.pago = reserva.pago == null ? 'Pago no efectuado' : 'Pago efectuado';

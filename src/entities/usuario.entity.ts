@@ -10,7 +10,7 @@ export class Usuario extends BaseEntity{
     @PrimaryGeneratedColumn()
     id: number;
 
-    @Column()
+    @Column({ select: false })
     password: string;
 
     @Column({ unique: true })
