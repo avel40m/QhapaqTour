@@ -226,6 +226,7 @@ export const getReservasGuias = async (req:Request,res:Response) => {
         const arregloReservas: reservasDTO[] = [];
         reservas.map(reserva => {
             const reservaDTO = new reservasDTO();
+            reservaDTO.id = reserva.id;
             reservaDTO.apellido = reserva.usuario.apellido;
             reservaDTO.nombre = reserva.usuario.nombre;
             reservaDTO.cantidad = reserva.cantidadPersonas;
@@ -243,5 +244,22 @@ export const getReservasGuias = async (req:Request,res:Response) => {
               message: error.message
             });
         }        
+    }
+}
+
+export const deleteReserva = async (req:Request,res:Response) => {
+    const { id } = req.params;
+    try {
+        const reserva = await Reservas.findOne({where: {id: Number(id)}});
+        if(!reserva)
+            return res.status(404).json({message:'Reserva no encontrada'});
+        await Reservas.delete(reserva.id);
+        res.sendStatus(204);
+    } catch (error) {
+        if (error instanceof Error) {      
+            return res.status(500).json({
+              message: error.message
+            });
+        }                
     }
 }

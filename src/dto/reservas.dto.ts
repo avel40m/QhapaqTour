@@ -1,4 +1,5 @@
 export class reservasDTO {
+    id: number;
     apellido: string;
     nombre: string;
     cantidad: number;
