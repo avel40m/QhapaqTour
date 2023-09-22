@@ -34,6 +34,9 @@ export class Usuario extends BaseEntity{
     })
     rol: ROL;
 
+    // @Column()
+    // deviceId: string;
+
     @CreateDateColumn()
     createdAt: Date;
 
