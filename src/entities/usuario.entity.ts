@@ -34,6 +34,9 @@ export class Usuario extends BaseEntity{
     })
     rol: ROL;
 
+    @Column({ nullable: true })
+    registrationTokenFCM: string;
+
     @CreateDateColumn()
     createdAt: Date;
 

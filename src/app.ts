@@ -11,6 +11,16 @@ import comentarioRoutes from './routes/calificacion.router';
 import lugarRoutes from './routes/lugar.router';
 import recorridoRoutes from './routes/recorrido.router';
 import reservaRoutes from './routes/reserva.router';
+import 'dotenv/config'
+
+import { initializeApp, applicationDefault } from 'firebase-admin/app';
+
+process.env.GOOGLE_APPLICATION_CREDENTIALS;
+
+initializeApp({
+  credential: applicationDefault(),
+  projectId: 'qhapaqtour-be7e8'
+});
 
 const app = express();
 
