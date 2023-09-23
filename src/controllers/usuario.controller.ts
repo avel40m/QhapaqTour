@@ -20,6 +20,7 @@ interface UserBody {
     nombre: string;
     dni: string;
     rol: ROL;
+    registrationTokenFCM: string;
 
     carnet: string;
     licencia: number;
@@ -125,7 +126,7 @@ export const getUsuario = async (req: TypedRequest<{ id: string }, {}>, res: Res
 }
 
 export const signIn = async (req: TypedRequest<{}, UserBody>, res: Response) => {
-    const { password, email } = req.body;
+    const { password, email, registrationTokenFCM } = req.body;
     try {
         if (!password || !email) {
             return res.status(400).json({
@@ -309,3 +310,4 @@ export const getUserGuiaVehicle = async (req: Request, res: Response) => {
         }
     }
 }
+

@@ -1,11 +1,13 @@
 import { type ParamsDictionary } from 'express-serve-static-core'
 import { type Request, type Response } from 'express';
+import { getMessaging } from 'firebase-admin/messaging';
 import { Reservas } from '../entities/reservas.entity';
 import { Usuario } from '../entities/usuario.entity';
 import { Recorrido } from '../entities/recorrido.entity';
 import { RecorridoDTO } from '../dto/recorrido.dto';
 import { Pago } from '../entities/pago.entity';
 import { reservaClienteDTO, reservasDTO } from '../dto/reservas.dto';
+import { Guia } from '../entities/guia.entity';
 
 interface ReservaBody {
     clienteId: number;
@@ -71,7 +73,13 @@ export const createReserva = async (req: TypedRequest<{}, ReservaBody>, res: Res
         }
 
         // Controlar existencia del recorrido
-        const recorrido = await Recorrido.findOneBy({ id: recorridoId });
+        const recorrido = await Recorrido.findOne({
+            where: { id: recorridoId },
+            relations: {
+                guia: true,
+                lugar: true
+            }
+        });
         if (!recorrido) {
             return res.status(404).json({
                 message: 'Recorrido no encontrado'
@@ -114,7 +122,24 @@ export const createReserva = async (req: TypedRequest<{}, ReservaBody>, res: Res
         reservaNueva.recorrido = recorrido;
         
         await reservaNueva.save();
+        
+        const guia = await Guia.findOne({
+            where: { id: recorrido.guia.id },
+            relations: {
+                usuario: true
+            }
+        });
 
+        const message = {
+            notification: {
+                title: 'Reserva nueva',
+                image: recorrido.lugar.url,
+                body: `Tienes una reserva nueva para: ${recorrido.lugar.nombre}`
+            },
+            token: guia?.usuario.registrationTokenFCM as string
+        }
+        await getMessaging().send(message);
+        
         return res.status(201).json(reservaNueva);
     } catch (error) {
         if (error instanceof Error) {      
