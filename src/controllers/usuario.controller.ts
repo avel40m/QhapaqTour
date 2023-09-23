@@ -126,7 +126,7 @@ export const getUsuario = async (req: TypedRequest<{ id: string }, {}>, res: Res
 }
 
 export const signIn = async (req: TypedRequest<{}, UserBody>, res: Response) => {
-    const { password, email, registrationTokenFCM } = req.body;
+    const { password, email } = req.body;
     try {
         if (!password || !email) {
             return res.status(400).json({
